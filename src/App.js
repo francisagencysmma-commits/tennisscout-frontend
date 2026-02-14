@@ -7,6 +7,7 @@ import UploadVideo from './components/UploadVideo';
 import { playerData } from './data/playerData';
 import { Trophy, TrendingUp, DollarSign, Award, Calendar, User, Clock, Target, Zap, Activity, Video, Eye, Star, HardDrive, Filter, Play, Download, Share2, Upload, X } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell } from 'recharts';
+import Landing from './components/Landing';
 
 function App() {
   const [activeSection, setActiveSection] = useState('profile');
@@ -15,6 +16,7 @@ function App() {
   const [videos, setVideos] = useState([]);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [videoTab, setVideoTab] = useState('mis-videos');
+  const [showLanding, setShowLanding] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -64,9 +66,13 @@ function App() {
     }
   }, [isAuthenticated]);
 
-  if (!isAuthenticated) {
-    return <Auth onAuthSuccess={handleAuthSuccess} />;
-  }
+  if (showLanding && !isAuthenticated) {
+  return <Landing onLoginClick={() => setShowLanding(false)} />;
+}
+
+if (!isAuthenticated) {
+  return <Auth onAuthSuccess={handleAuthSuccess} />;
+}
 
   const renderProfile = () => (
     <div className="space-y-6 animate-fadeIn">
