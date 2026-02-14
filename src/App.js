@@ -39,13 +39,13 @@ function App() {
 
   const loadVideos = async () => {
   try {
-    const response = await fetch('http://localhost:5000/api/videos');
+    const response = await fetch('https://tennisscout-backend.onrender.com/api/videos');
     const data = await response.json();
-    // Asegurarse de que data sea un array
+    console.log('Videos cargados:', data); // Para debugging
     setVideos(Array.isArray(data) ? data : []);
   } catch (error) {
     console.error('Error cargando videos:', error);
-    setVideos([]); // Si hay error, array vacío
+    setVideos([]);
   }
 };
 
