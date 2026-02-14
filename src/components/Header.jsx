@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link2, Send } from 'lucide-react';
+import { Link2, Send, LogOut } from 'lucide-react';
 
-const Header = ({ playerData }) => {
+const Header = ({ playerData, onLogout }) => {
   // Si playerData existe, usarlo; si no, usar valores por defecto
   const nombre = playerData?.nombre || 'Usuario';
   const edad = playerData?.edad || '-';
@@ -40,6 +40,14 @@ const Header = ({ playerData }) => {
           <button className="flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl transition-colors">
             <Send className="w-5 h-5" />
             <span className="font-medium">Enviar a Academias</span>
+          </button>
+
+          <button 
+            onClick={onLogout}
+            className="flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors"
+          >
+            <LogOut className="w-5 h-5" />
+            <span className="font-medium">Cerrar Sesión</span>
           </button>
         </div>
       </div>
