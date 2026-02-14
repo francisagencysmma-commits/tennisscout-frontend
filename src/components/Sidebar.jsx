@@ -11,16 +11,14 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
   ];
 
   return (
-    <aside className="bg-white w-20 min-h-screen flex flex-col items-center py-8 border-r border-gray-100 shadow-sm">
+    <div className="w-20 bg-dark-50 border-r border-dark-200 flex flex-col items-center py-8 space-y-8">
       {/* Logo */}
-      <div className="mb-12">
-        <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
-          <span className="text-xl font-bold text-gray-700">T</span>
-        </div>
+      <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-glow">
+        <span className="text-2xl font-bold text-white">T</span>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 flex flex-col gap-6">
+      {/* Menu Items */}
+      <nav className="flex-1 flex flex-col space-y-4">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeSection === item.id;
@@ -29,25 +27,25 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
             <button
               key={item.id}
               onClick={() => setActiveSection(item.id)}
-              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 ${
-                isActive
-                  ? 'bg-primary-50 text-primary-600'
-                  : 'text-gray-400 hover:bg-gray-50 hover:text-gray-700'
-              }`}
+              className={`
+                w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300
+                ${isActive 
+                  ? 'bg-primary-600 text-white shadow-glow' 
+                  : 'text-dark-500 hover:bg-dark-100 hover:text-primary-400'
+                }
+              `}
             >
-              <Icon className="w-5 h-5" />
+              <Icon className="w-6 h-6" />
             </button>
           );
         })}
       </nav>
 
       {/* User Avatar */}
-      <div className="mt-auto">
-        <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl flex items-center justify-center">
-          <span className="text-white font-semibold text-sm">MS</span>
-        </div>
+      <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center">
+        <span className="text-sm font-bold text-white">MS</span>
       </div>
-    </aside>
+    </div>
   );
 };
 
