@@ -25,10 +25,20 @@ function App() {
     }
   }, []);
 
-  const handleAuthSuccess = (player) => {
-    setIsAuthenticated(true);
-    setCurrentUser(player);
-  };
+  const handleAuthSuccess = async (player) => {
+  setIsAuthenticated(true);
+  setCurrentUser(player);
+  
+  // Cargar datos completos del jugador
+  try {
+    const response = await fetch(`https://tennisscout-backend.onrender.com/api/players/${player.id}`);
+    const fullPlayerData = await response.json();
+    setCurrentUser(fullPlayerData);
+    localStorage.setItem('player', JSON.stringify(fullPlayerData));
+  } catch (error) {
+    console.error('Error cargando datos del jugador:', error);
+  }
+};
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -776,7 +786,7 @@ function App() {
       <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
       
       <main className="flex-1 flex flex-col">
-        <Header playerData={playerData} />
+        <Header playerData={currentUser} />
         
         <div className="flex-1 px-8 pb-8 overflow-auto">
           <div className="max-w-7xl mx-auto">
