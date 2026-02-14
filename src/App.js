@@ -14,6 +14,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [videos, setVideos] = useState([]);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [videoTab, setVideoTab] = useState('mis-videos');
 
   // Verificar si hay usuario logueado al cargar
   useEffect(() => {
@@ -333,7 +334,6 @@ function App() {
 
   // Render Videos Section (Pantalla 2)
   const renderVideos = () => {
-    const [videoTab, setVideoTab] = useState('mis-videos');
 
     // Filtrar videos según la pestaña activa
     const videosToShow = videoTab === 'mis-videos' 
