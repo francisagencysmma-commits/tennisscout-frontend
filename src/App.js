@@ -26,19 +26,19 @@ function App() {
   }, []);
 
   const handleAuthSuccess = async (player) => {
-  setIsAuthenticated(true);
-  setCurrentUser(player);
-  
-  // Cargar datos completos del jugador
-  try {
-    const response = await fetch(`https://tennisscout-backend.onrender.com/api/players/${player.id}`);
-    const fullPlayerData = await response.json();
-    setCurrentUser(fullPlayerData);
-    localStorage.setItem('player', JSON.stringify(fullPlayerData));
-  } catch (error) {
-    console.error('Error cargando datos del jugador:', error);
-  }
-};
+    setIsAuthenticated(true);
+    setCurrentUser(player);
+    
+    // Cargar datos completos del jugador
+    try {
+      const response = await fetch(`https://tennisscout-backend.onrender.com/api/players/${player.id}`);
+      const fullPlayerData = await response.json();
+      setCurrentUser(fullPlayerData);
+      localStorage.setItem('player', JSON.stringify(fullPlayerData));
+    } catch (error) {
+      console.error('Error cargando datos del jugador:', error);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -48,16 +48,16 @@ function App() {
   };
 
   const loadVideos = async () => {
-  try {
-    const response = await fetch('https://tennisscout-backend.onrender.com/api/videos');
-    const data = await response.json();
-    console.log('Videos cargados:', data); // Para debugging
-    setVideos(Array.isArray(data) ? data : []);
-  } catch (error) {
-    console.error('Error cargando videos:', error);
-    setVideos([]);
-  }
-};
+    try {
+      const response = await fetch('https://tennisscout-backend.onrender.com/api/videos');
+      const data = await response.json();
+      console.log('Videos cargados:', data);
+      setVideos(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error cargando videos:', error);
+      setVideos([]);
+    }
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -333,6 +333,13 @@ function App() {
 
   // Render Videos Section (Pantalla 2)
   const renderVideos = () => {
+    const [videoTab, setVideoTab] = useState('mis-videos');
+
+    // Filtrar videos según la pestaña activa
+    const videosToShow = videoTab === 'mis-videos' 
+      ? videos.filter(video => video.jugadorId?._id === currentUser?.id || video.jugadorId === currentUser?.id)
+      : videos;
+
     return (
       <div className="space-y-6 animate-fadeIn">
         {/* Search and Filters */}
@@ -359,10 +366,34 @@ function App() {
           </div>
         </div>
 
+        {/* Tabs: Mis Videos vs Explorar */}
+        <div className="flex gap-4 border-b border-gray-200">
+          <button 
+            onClick={() => setVideoTab('mis-videos')}
+            className={`px-4 py-3 text-sm font-medium transition-all ${
+              videoTab === 'mis-videos'
+                ? 'text-primary-600 border-b-2 border-primary-600'
+                : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            Mis Videos
+          </button>
+          <button 
+            onClick={() => setVideoTab('explorar')}
+            className={`px-4 py-3 text-sm font-medium transition-all ${
+              videoTab === 'explorar'
+                ? 'text-primary-600 border-b-2 border-primary-600'
+                : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            Explorar Todos
+          </button>
+        </div>
+
         {/* Filter Tabs */}
         <div className="flex gap-3">
           <button className="px-4 py-2 bg-gray-100 text-gray-900 rounded-lg text-sm font-medium">
-            All Videos <span className="ml-1 text-gray-500">({videos.length})</span>
+            All Videos <span className="ml-1 text-gray-500">({videosToShow.length})</span>
           </button>
           <button className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg text-sm font-medium">
             Serves <span className="ml-1 text-gray-400">(0)</span>
@@ -380,8 +411,8 @@ function App() {
 
         {/* Video Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {videos.length > 0 ? (
-            videos.map((video, index) => (
+          {videosToShow.length > 0 ? (
+            videosToShow.map((video, index) => (
               <div key={video._id} className="bg-white rounded-2xl shadow-card overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative aspect-video bg-gray-200">
                   {video.url ? (
@@ -443,13 +474,17 @@ function App() {
           ) : (
             <div className="col-span-full text-center py-12">
               <Video className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-600 mb-4">No hay videos aún</p>
-              <button 
-                onClick={() => setShowUploadModal(true)}
-                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-              >
-                Subir tu primer video
-              </button>
+              <p className="text-gray-600 mb-4">
+                {videoTab === 'mis-videos' ? 'No has subido videos aún' : 'No hay videos disponibles'}
+              </p>
+              {videoTab === 'mis-videos' && (
+                <button 
+                  onClick={() => setShowUploadModal(true)}
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                >
+                  Subir tu primer video
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -458,14 +493,21 @@ function App() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="bg-white rounded-2xl shadow-card p-6 text-center">
             <Video className="w-10 h-10 text-primary-600 mx-auto mb-3" />
-            <div className="text-3xl font-bold text-gray-900 mb-1">{videos.length}</div>
-            <div className="text-sm text-gray-600">Total Videos</div>
+            <div className="text-3xl font-bold text-gray-900 mb-1">
+              {videoTab === 'mis-videos' 
+                ? videos.filter(v => v.jugadorId?._id === currentUser?.id || v.jugadorId === currentUser?.id).length
+                : videos.length
+              }
+            </div>
+            <div className="text-sm text-gray-600">
+              {videoTab === 'mis-videos' ? 'Mis Videos' : 'Total Videos'}
+            </div>
           </div>
           
           <div className="bg-white rounded-2xl shadow-card p-6 text-center">
             <Eye className="w-10 h-10 text-primary-600 mx-auto mb-3" />
             <div className="text-3xl font-bold text-gray-900 mb-1">
-              {videos.reduce((acc, v) => acc + (v.vistas || 0), 0)}
+              {videosToShow.reduce((acc, v) => acc + (v.vistas || 0), 0)}
             </div>
             <div className="text-sm text-gray-600">Total Views</div>
           </div>
@@ -473,8 +515,8 @@ function App() {
           <div className="bg-white rounded-2xl shadow-card p-6 text-center">
             <Star className="w-10 h-10 text-primary-600 mx-auto mb-3" />
             <div className="text-3xl font-bold text-gray-900 mb-1">
-              {videos.length > 0 
-                ? (videos.reduce((acc, v) => acc + (v.rating || 0), 0) / videos.length).toFixed(1)
+              {videosToShow.length > 0 
+                ? (videosToShow.reduce((acc, v) => acc + (v.rating || 0), 0) / videosToShow.length).toFixed(1)
                 : '0'
               }/5
             </div>
@@ -503,15 +545,15 @@ function App() {
                   </button>
                 </div>
                 <UploadVideo 
-  playerId={currentUser?.id} 
-  onUploadSuccess={(video) => {
-    setShowUploadModal(false);
-    loadVideos(); // Recargar videos
-    setTimeout(() => {
-      loadVideos(); // Recargar de nuevo después de 1 segundo
-    }, 1000);
-  }}
-/>
+                  playerId={currentUser?.id} 
+                  onUploadSuccess={(video) => {
+                    setShowUploadModal(false);
+                    loadVideos();
+                    setTimeout(() => {
+                      loadVideos();
+                    }, 1000);
+                  }}
+                />
               </div>
             </div>
           </div>
