@@ -1,4 +1,4 @@
-const API_URL = tennisscout-frontend.vercel.app;
+const API_URL = 'https://tennisscout-backend.onrender.com/api';
 
 // ========== PLAYERS ==========
 
