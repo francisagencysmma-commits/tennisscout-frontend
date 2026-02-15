@@ -1,136 +1,160 @@
 import React, { useState } from 'react';
-import { uploadVideo } from '../services/api';
-import { Upload, X, Check, AlertCircle } from 'lucide-react';
+import { Upload, X, CheckCircle, AlertCircle } from 'lucide-react';
 
 const UploadVideo = ({ playerId, onUploadSuccess }) => {
-  const [file, setFile] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
+  const [titulo, setTitulo] = useState('');
+  const [descripcion, setDescripcion] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  
-  const [formData, setFormData] = useState({
-    titulo: '',
-    descripcion: '',
-    tags: '',
-    duracion: ''
-  });
+
+  console.log('=== UploadVideo Component ===');
+  console.log('Player ID recibido:', playerId);
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      if (!selectedFile.type.startsWith('video/')) {
-        setError('Por favor selecciona un archivo de video');
-        return;
-      }
-      if (selectedFile.size > 100 * 1024 * 1024) {
-        setError('El video no puede superar los 100MB');
-        return;
-      }
-      setFile(selectedFile);
+    const file = e.target.files[0];
+    console.log('Archivo seleccionado:', file);
+    if (file && file.type.startsWith('video/')) {
+      setVideoFile(file);
       setError('');
-      console.log('✅ Archivo seleccionado:', selectedFile.name);
+    } else {
+      setError('Por favor selecciona un archivo de video válido');
     }
-  };
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    console.log('📤 Iniciando subida...');
+    console.log('=== INICIO SUBIDA VIDEO ===');
     console.log('Player ID:', playerId);
-    console.log('Archivo:', file);
-    console.log('Form Data:', formData);
-    
-    if (!file) {
-      setError('Por favor selecciona un video');
-      return;
-    }
+    console.log('Título:', titulo);
+    console.log('Descripción:', descripcion);
+    console.log('Archivo:', videoFile);
 
-    if (!formData.titulo) {
-      setError('Por favor ingresa un título');
+    if (!videoFile || !titulo) {
+      setError('Por favor completa todos los campos');
       return;
     }
 
     if (!playerId) {
       setError('Error: No se encontró el ID del jugador');
-      console.error('Player ID no definido');
+      console.error('playerId es undefined o null');
       return;
     }
 
     setUploading(true);
-    setProgress(10);
     setError('');
+    setUploadProgress(0);
 
     try {
-      const data = new FormData();
-      data.append('video', file);
-      data.append('jugadorId', playerId);
-      data.append('titulo', formData.titulo);
-      data.append('descripcion', formData.descripcion);
-      data.append('duracion', formData.duracion);
-      data.append('tags', JSON.stringify(formData.tags.split(',').map(t => t.trim()).filter(t => t)));
+      // 1. Subir video a Cloudinary
+      console.log('Paso 1: Subiendo a Cloudinary...');
+      const formData = new FormData();
+      formData.append('file', videoFile);
+      formData.append('upload_preset', 'tennisscout');
+      formData.append('resource_type', 'video');
 
-      console.log('📦 FormData preparado, enviando...');
-      setProgress(30);
+      const cloudinaryResponse = await fetch(
+        'https://api.cloudinary.com/v1_1/dfiw0rscm/video/upload',
+        {
+          method: 'POST',
+          body: formData
+        }
+      );
 
-      const response = await uploadVideo(data);
-      console.log('✅ Respuesta del servidor:', response);
+      if (!cloudinaryResponse.ok) {
+        throw new Error('Error subiendo video a Cloudinary');
+      }
 
-      setProgress(100);
+      const cloudinaryData = await cloudinaryResponse.json();
+      console.log('Video subido a Cloudinary:', cloudinaryData.secure_url);
+
+      setUploadProgress(50);
+
+      // 2. Guardar en backend
+      console.log('Paso 2: Guardando en backend...');
+      const videoData = {
+        jugadorId: playerId,
+        titulo: titulo,
+        descripcion: descripcion,
+        url: cloudinaryData.secure_url,
+        duracion: Math.floor(cloudinaryData.duration || 0)
+      };
+
+      console.log('Datos a enviar al backend:', videoData);
+
+      const backendResponse = await fetch('https://tennisscout-backend.onrender.com/api/videos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(videoData)
+      });
+
+      console.log('Status del backend:', backendResponse.status);
+
+      if (!backendResponse.ok) {
+        const errorText = await backendResponse.text();
+        console.error('Error del backend:', errorText);
+        throw new Error(`Error guardando video: ${errorText}`);
+      }
+
+      const savedVideo = await backendResponse.json();
+      console.log('Video guardado en backend:', savedVideo);
+
+      setUploadProgress(100);
       setSuccess(true);
-      
+
       setTimeout(() => {
-        setFile(null);
-        setFormData({
-          titulo: '',
-          descripcion: '',
-          tags: '',
-          duracion: ''
-        });
-        setSuccess(false);
-        if (onUploadSuccess) onUploadSuccess(response.video);
-      }, 2000);
+        console.log('Llamando onUploadSuccess con:', savedVideo);
+        onUploadSuccess(savedVideo);
+      }, 1000);
 
     } catch (err) {
-      console.error('❌ Error completo:', err);
-      setError('Error al subir el video: ' + (err.message || 'Error desconocido'));
+      console.error('Error completo:', err);
+      setError(err.message || 'Error subiendo el video');
     } finally {
       setUploading(false);
-      setProgress(0);
     }
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-card p-6">
-      <h3 className="text-xl font-serif font-bold text-gray-900 mb-6">Subir Video</h3>
-
-      {success && (
-        <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
-          <Check className="w-5 h-5 text-green-600" />
-          <span className="text-green-700">¡Video subido exitosamente!</span>
-        </div>
-      )}
+    <div className="space-y-6">
+      {/* Debug Info */}
+      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-xs">
+        <strong>Debug Info:</strong>
+        <div>Player ID: {playerId || 'undefined'}</div>
+        <div>Token: {localStorage.getItem('token') ? 'Existe' : 'No existe'}</div>
+      </div>
 
       {error && (
-        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
-          <AlertCircle className="w-5 h-5 text-red-600" />
-          <span className="text-red-700">{error}</span>
+        <div className="bg-red-50 border-2 border-red-500 rounded-xl p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="font-bold text-red-700">Error</p>
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {success && (
+        <div className="bg-green-50 border-2 border-green-500 rounded-xl p-4 flex items-start gap-3">
+          <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="font-bold text-green-700">¡Video subido con éxito!</p>
+            <p className="text-sm text-green-600">Tu video se está procesando...</p>
+          </div>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* File Upload */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Archivo de Video
-          </label>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-500 transition-colors">
+          <label className="block text-sm font-bold text-black mb-2">Seleccionar Video</label>
+          <div className="relative">
             <input
               type="file"
               accept="video/*"
@@ -139,119 +163,87 @@ const UploadVideo = ({ playerId, onUploadSuccess }) => {
               id="video-upload"
               disabled={uploading}
             />
-            <label htmlFor="video-upload" className="cursor-pointer">
-              <Upload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              {file ? (
-                <div className="flex items-center justify-center gap-2">
-                  <span className="text-sm font-medium text-gray-900">{file.name}</span>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setFile(null);
-                    }}
-                    className="text-red-600 hover:text-red-700"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <p className="text-sm text-gray-600 mb-1">
-                    Click para seleccionar un video
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    MP4, MOV, AVI (máx. 100MB)
-                  </p>
-                </>
-              )}
+            <label
+              htmlFor="video-upload"
+              className={`flex items-center justify-center gap-3 w-full p-8 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
+                videoFile 
+                  ? 'border-lime-neon bg-lime-neon/5' 
+                  : 'border-gray-300 hover:border-lime-neon hover:bg-gray-50'
+              } ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              <Upload className="w-6 h-6 text-gray-400" />
+              <div className="text-center">
+                <p className="font-bold text-black">
+                  {videoFile ? videoFile.name : 'Click para seleccionar video'}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {videoFile ? `${(videoFile.size / 1024 / 1024).toFixed(2)} MB` : 'Formatos: MP4, MOV, AVI'}
+                </p>
+              </div>
             </label>
           </div>
         </div>
 
+        {/* Title */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Título *
-          </label>
+          <label className="block text-sm font-bold text-black mb-2">Título del Video</label>
           <input
             type="text"
-            name="titulo"
-            value={formData.titulo}
-            onChange={handleChange}
+            value={titulo}
+            onChange={(e) => setTitulo(e.target.value)}
             required
             disabled={uploading}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            placeholder="Ej: Servicio ganador - Semifinal"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-lime-neon transition-all text-black"
+            placeholder="Ej: Match Point - Madrid Open"
           />
         </div>
 
+        {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Descripción
-          </label>
+          <label className="block text-sm font-bold text-black mb-2">Descripción (opcional)</label>
           <textarea
-            name="descripcion"
-            value={formData.descripcion}
-            onChange={handleChange}
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
             disabled={uploading}
-            rows={3}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            placeholder="Describe el video..."
+            rows="3"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-lime-neon transition-all text-black resize-none"
+            placeholder="Describe tu jugada..."
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Tags (separados por comas)
-            </label>
-            <input
-              type="text"
-              name="tags"
-              value={formData.tags}
-              onChange={handleChange}
-              disabled={uploading}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="Servicio, Winner, Final"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Duración
-            </label>
-            <input
-              type="text"
-              name="duracion"
-              value={formData.duracion}
-              onChange={handleChange}
-              disabled={uploading}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="2:34"
-            />
-          </div>
-        </div>
-
+        {/* Progress Bar */}
         {uploading && (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">Subiendo video...</span>
-              <span className="font-medium text-primary-600">{progress}%</span>
+              <span className="font-medium text-black">Subiendo video...</span>
+              <span className="text-gray-600">{uploadProgress}%</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
               <div 
-                className="bg-primary-600 h-full transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
+                className="bg-lime-neon h-full transition-all duration-300 rounded-full"
+                style={{ width: `${uploadProgress}%` }}
+              ></div>
             </div>
           </div>
         )}
 
+        {/* Submit Button */}
         <button
           type="submit"
-          disabled={uploading || !file}
-          className="w-full py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg font-semibold hover:from-primary-700 hover:to-primary-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={uploading || !videoFile || !titulo}
+          className="w-full py-4 bg-lime-neon text-black font-bold rounded-xl hover:brightness-105 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
         >
-          {uploading ? 'Subiendo...' : 'Subir Video'}
+          {uploading ? (
+            <>
+              <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+              Subiendo...
+            </>
+          ) : (
+            <>
+              <Upload className="w-5 h-5" />
+              Subir Video
+            </>
+          )}
         </button>
       </form>
     </div>
