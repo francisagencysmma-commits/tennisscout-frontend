@@ -17,6 +17,7 @@ function App() {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [videoTab, setVideoTab] = useState('mis-videos');
   const [showLanding, setShowLanding] = useState(true);
+  const [loadingVideos, setLoadingVideos] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -51,18 +52,28 @@ function App() {
   };
 
   const loadVideos = async () => {
+    setLoadingVideos(true);
+    console.log('=== CARGANDO VIDEOS ===');
     try {
       const response = await fetch('https://tennisscout-backend.onrender.com/api/videos');
+      console.log('Response status:', response.status);
+      
       const data = await response.json();
+      console.log('Videos recibidos:', data);
+      console.log('Total videos:', Array.isArray(data) ? data.length : 0);
+      
       setVideos(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error cargando videos:', error);
       setVideos([]);
+    } finally {
+      setLoadingVideos(false);
     }
   };
 
   useEffect(() => {
     if (isAuthenticated) {
+      console.log('Usuario autenticado, cargando videos...');
       loadVideos();
     }
   }, [isAuthenticated]);
@@ -75,7 +86,6 @@ function App() {
     return <Auth onAuthSuccess={handleAuthSuccess} />;
   }
 
-  // FUNCIÓN PARA ABRIR MODAL DE UPLOAD
   const handleOpenUploadModal = () => {
     console.log('Abriendo modal de upload');
     setShowUploadModal(true);
@@ -86,16 +96,41 @@ function App() {
     setShowUploadModal(false);
   };
 
-  const handleVideoUploadSuccess = (newVideo) => {
-    console.log('Video subido con éxito:', newVideo);
+  const handleVideoUploadSuccess = async (newVideo) => {
+    console.log('=== VIDEO SUBIDO CON ÉXITO ===');
+    console.log('Nuevo video:', newVideo);
+    
+    // Cerrar modal
     setShowUploadModal(false);
-    loadVideos(); // Recargar videos
+    
+    // Esperar 1 segundo y recargar
+    setTimeout(async () => {
+      console.log('Recargando lista de videos...');
+      await loadVideos();
+      
+      // Si estamos en profile, cambiar a videos
+      if (activeSection === 'profile') {
+        setActiveSection('videos');
+        setVideoTab('mis-videos');
+      }
+    }, 1000);
   };
 
   const renderVideos = () => {
+    console.log('=== RENDERIZANDO VIDEOS ===');
+    console.log('Current User ID:', currentUser?._id);
+    console.log('Total videos en state:', videos.length);
+    
     const videosToShow = videoTab === 'mis-videos' 
-      ? videos.filter(video => video.jugadorId?._id === currentUser?._id || video.jugadorId === currentUser?._id)
+      ? videos.filter(video => {
+          const videoPlayerId = video.jugadorId?._id || video.jugadorId;
+          const match = videoPlayerId === currentUser?._id;
+          console.log(`Video ${video._id}: jugadorId=${videoPlayerId}, match=${match}`);
+          return match;
+        })
       : videos;
+
+    console.log('Videos a mostrar:', videosToShow.length);
 
     return (
       <div className="space-y-6 animate-fadeIn">
@@ -135,52 +170,62 @@ function App() {
           </button>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {videosToShow.length > 0 ? (
-            videosToShow.map((video) => (
-              <div key={video._id} className="bg-white rounded-2xl overflow-hidden hover:scale-105 transition-transform border-2 border-gray-200">
-                <div className="relative aspect-video bg-gray-200">
-                  {video.url ? (
-                    <video src={video.url} className="w-full h-full object-cover" controls />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Video className="w-12 h-12 text-gray-400" />
+        {loadingVideos ? (
+          <div className="text-center py-16">
+            <div className="w-12 h-12 border-4 border-lime-neon border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Cargando videos...</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {videosToShow.length > 0 ? (
+              videosToShow.map((video) => (
+                <div key={video._id} className="bg-white rounded-2xl overflow-hidden hover:scale-105 transition-transform border-2 border-gray-200 shadow-lg">
+                  <div className="relative aspect-video bg-gray-200">
+                    {video.url ? (
+                      <video src={video.url} className="w-full h-full object-cover" controls />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Video className="w-12 h-12 text-gray-400" />
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="p-4">
+                    <h4 className="font-bold mb-2 text-black">{video.titulo}</h4>
+                    {video.descripcion && (
+                      <p className="text-sm text-gray-600 mb-2">{video.descripcion}</p>
+                    )}
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3.5 h-3.5" />
+                        {new Date(video.createdAt).toLocaleDateString()}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Eye className="w-3.5 h-3.5" />
+                        {video.vistas || 0}
+                      </span>
                     </div>
-                  )}
-                </div>
-                
-                <div className="p-4">
-                  <h4 className="font-bold mb-2 text-black">{video.titulo}</h4>
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5" />
-                      {new Date(video.createdAt).toLocaleDateString()}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-3.5 h-3.5" />
-                      {video.vistas || 0}
-                    </span>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-16 bg-white rounded-2xl border-2 border-gray-200">
+                <Video className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+                <p className="mb-4 text-gray-600 font-medium">
+                  {videoTab === 'mis-videos' ? 'No has subido videos aún' : 'No hay videos disponibles'}
+                </p>
+                {videoTab === 'mis-videos' && (
+                  <button 
+                    onClick={handleOpenUploadModal}
+                    className="px-6 py-3 rounded-xl font-bold bg-lime-neon text-black hover:brightness-105 transition-all"
+                  >
+                    Subir tu primer video
+                  </button>
+                )}
               </div>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-16 bg-white rounded-2xl border-2 border-gray-200">
-              <Video className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-              <p className="mb-4 text-gray-600">
-                {videoTab === 'mis-videos' ? 'No has subido videos aún' : 'No hay videos disponibles'}
-              </p>
-              {videoTab === 'mis-videos' && (
-                <button 
-                  onClick={handleOpenUploadModal}
-                  className="px-6 py-3 rounded-xl font-bold bg-lime-neon text-black hover:brightness-105 transition-all"
-                >
-                  Subir tu primer video
-                </button>
-              )}
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
     );
   };
@@ -214,7 +259,6 @@ function App() {
         </div>
       </main>
 
-      {/* MODAL DE UPLOAD - IMPORTANTE */}
       {showUploadModal && (
         <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-lime-neon shadow-2xl">
