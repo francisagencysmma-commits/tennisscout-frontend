@@ -72,21 +72,34 @@ const Auth = ({ onAuthSuccess }) => {
     try {
       const token = localStorage.getItem('token');
       
+      console.log('Actualizando jugador:', tempPlayer._id);
+      console.log('Datos onboarding:', onboardingData);
+      
       const response = await fetch(`https://tennisscout-backend.onrender.com/api/players/${tempPlayer._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(onboardingData)
+        body: JSON.stringify({
+          ...onboardingData,
+          fullName: onboardingData.fullName || tempPlayer.nombre
+        })
       });
 
+      if (!response.ok) {
+        throw new Error('Error actualizando perfil');
+      }
+
       const updatedPlayer = await response.json();
+      
+      console.log('Jugador actualizado:', updatedPlayer);
       
       localStorage.setItem('player', JSON.stringify(updatedPlayer));
       onAuthSuccess(updatedPlayer);
     } catch (error) {
       console.error('Error actualizando perfil:', error);
+      alert('Error guardando datos. Intenta editar tu perfil después.');
       onAuthSuccess(tempPlayer);
     }
   };
