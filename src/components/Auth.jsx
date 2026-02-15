@@ -51,10 +51,22 @@ const Auth = ({ onAuthSuccess }) => {
           utrRating: parseFloat(formData.utrRating) || 0
         });
 
+        console.log('Respuesta registro completa:', response);
+
         if (response.token) {
+          // Verificar qué campo tiene el ID
+          const playerId = response.player._id || response.player.id || response.id;
+          console.log('Player ID encontrado:', playerId);
+          console.log('Player completo:', response.player);
+
           localStorage.setItem('token', response.token);
           localStorage.setItem('player', JSON.stringify(response.player));
-          setTempPlayer(response.player);
+          
+          setTempPlayer({
+            ...response.player,
+            _id: playerId,
+            id: playerId
+          });
           setShowOnboarding(true);
         } else {
           setError(response.error || 'Error en registro');
@@ -62,7 +74,7 @@ const Auth = ({ onAuthSuccess }) => {
       }
     } catch (err) {
       setError('Error de conexión');
-      console.error(err);
+      console.error('Error completo:', err);
     } finally {
       setLoading(false);
     }
@@ -71,11 +83,21 @@ const Auth = ({ onAuthSuccess }) => {
   const handleOnboardingComplete = async (onboardingData) => {
     try {
       const token = localStorage.getItem('token');
+      const playerId = tempPlayer._id || tempPlayer.id;
       
-      console.log('Actualizando jugador:', tempPlayer._id);
-      console.log('Datos onboarding:', onboardingData);
+      console.log('=== INICIO ACTUALIZACIÓN ===');
+      console.log('Player ID:', playerId);
+      console.log('Token:', token ? 'Existe' : 'NO EXISTE');
+      console.log('Datos a enviar:', onboardingData);
       
-      const response = await fetch(`https://tennisscout-backend.onrender.com/api/players/${tempPlayer._id}`, {
+      if (!playerId) {
+        throw new Error('No se encontró el ID del jugador');
+      }
+
+      const url = `https://tennisscout-backend.onrender.com/api/players/${playerId}`;
+      console.log('URL:', url);
+
+      const response = await fetch(url, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -87,19 +109,24 @@ const Auth = ({ onAuthSuccess }) => {
         })
       });
 
+      console.log('Status de respuesta:', response.status);
+
       if (!response.ok) {
-        throw new Error('Error actualizando perfil');
+        const errorText = await response.text();
+        console.error('Error del servidor:', errorText);
+        throw new Error(`Error ${response.status}: ${errorText}`);
       }
 
       const updatedPlayer = await response.json();
       
-      console.log('Jugador actualizado:', updatedPlayer);
+      console.log('Jugador actualizado exitosamente:', updatedPlayer);
+      console.log('=== FIN ACTUALIZACIÓN ===');
       
       localStorage.setItem('player', JSON.stringify(updatedPlayer));
       onAuthSuccess(updatedPlayer);
     } catch (error) {
       console.error('Error actualizando perfil:', error);
-      alert('Error guardando datos. Intenta editar tu perfil después.');
+      alert(`Error guardando datos: ${error.message}. Puedes editar tu perfil después.`);
       onAuthSuccess(tempPlayer);
     }
   };
