@@ -1,7 +1,10 @@
-import React from 'react';
-import { Edit, Upload, Play, MapPin, Calendar, Trophy, ArrowRight, Plus, Zap } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Edit, Upload, Play, MapPin, Calendar, Trophy, ArrowRight, Plus, Zap, Eye } from 'lucide-react';
 
 const ProfileView = ({ playerData, onUploadVideo }) => {
+  const [videos, setVideos] = useState([]);
+  const [loadingVideos, setLoadingVideos] = useState(true);
+
   const calculateAge = (dateOfBirth) => {
     if (!dateOfBirth) return playerData?.edad || 0;
     const birthDate = new Date(dateOfBirth);
@@ -20,17 +23,41 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
     return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
+  // Cargar videos del jugador
+  useEffect(() => {
+    const loadPlayerVideos = async () => {
+      if (!playerData?._id) return;
+      
+      setLoadingVideos(true);
+      try {
+        const response = await fetch('https://tennisscout-backend.onrender.com/api/videos');
+        const allVideos = await response.json();
+        
+        // Filtrar solo los videos de este jugador
+        const playerVideos = allVideos.filter(video => 
+          (video.jugadorId?._id || video.jugadorId) === playerData._id
+        );
+        
+        setVideos(playerVideos);
+      } catch (error) {
+        console.error('Error cargando videos:', error);
+      } finally {
+        setLoadingVideos(false);
+      }
+    };
+
+    loadPlayerVideos();
+  }, [playerData?._id]);
+
   const age = calculateAge(playerData?.dateOfBirth);
 
   return (
     <main className="max-w-[1200px] mx-auto px-4 py-8">
-      {/* Hero Section - CON EFECTOS */}
+      {/* Hero Section */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
         <div className="lg:col-span-2 relative overflow-hidden rounded-xl bg-white shadow-lg border border-gray-200 flex flex-col md:flex-row group hover:shadow-2xl transition-all duration-300">
-          {/* Glow effect en hover */}
           <div className="absolute inset-0 bg-gradient-to-br from-lime-neon/0 via-lime-neon/0 to-lime-neon/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
           
-          {/* Photo con efecto */}
           <div className="relative md:w-1/3 aspect-[3/4] md:aspect-auto bg-cover bg-center min-h-[350px] overflow-hidden">
             <div 
               className="absolute inset-0 bg-cover bg-center transform group-hover:scale-105 transition-transform duration-700"
@@ -46,11 +73,9 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
                 </div>
               )}
             </div>
-            {/* Borde animado */}
             <div className="absolute inset-0 border-r-2 border-lime-neon/20 group-hover:border-lime-neon/50 transition-all duration-300"></div>
           </div>
 
-          {/* Info */}
           <div className="p-8 flex flex-col justify-between flex-1 relative z-10">
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -115,7 +140,7 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
           </div>
         </div>
 
-        {/* Equipment & Physical Sidebar - CON EFECTOS */}
+        {/* Equipment & Physical Sidebar */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 flex flex-col gap-6 hover:shadow-2xl hover:border-lime-neon/30 transition-all duration-300">
           <h3 className="text-lg font-bold flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-lime-neon to-yellow-400 rounded-lg flex items-center justify-center shadow-md">
@@ -184,7 +209,7 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
         </div>
       </section>
 
-      {/* IA Powered Stats Dashboard - CON EFECTOS */}
+      {/* Technical Info */}
       <section className="mb-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-extrabold flex items-center gap-2">
@@ -197,7 +222,6 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Most Powerful Shot */}
           {playerData?.strongestStroke && (
             <div className="relative group bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-lime-neon/50 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-lime-neon/0 to-lime-neon/10 opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300"></div>
@@ -211,7 +235,6 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
             </div>
           )}
 
-          {/* Playing Style */}
           {playerData?.playingStyle && (
             <div className="relative group bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-blue-400/50 transition-all duration-300">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-blue-500/10 opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300"></div>
@@ -223,7 +246,6 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
             </div>
           )}
 
-          {/* 1st Serve Consistency */}
           {playerData?.firstServeConsistency > 0 && (
             <div className="relative group bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-green-400/50 transition-all duration-300 flex flex-col items-center">
               <div className="absolute inset-0 bg-gradient-to-br from-green-500/0 to-green-500/10 opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300"></div>
@@ -260,7 +282,6 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
             </div>
           )}
 
-          {/* Injury History */}
           {playerData?.injuryHistory && (
             <div className="relative group bg-gradient-to-br from-black to-gray-900 p-6 rounded-xl border-2 border-black shadow-xl hover:shadow-2xl hover:border-lime-neon/50 transition-all duration-300 text-white overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-lime-neon/0 to-lime-neon/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -277,7 +298,7 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
         </div>
       </section>
 
-      {/* Video Gallery - CON EFECTOS */}
+      {/* Video Gallery - CON VIDEOS REALES */}
       <section className="mb-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-extrabold flex items-center gap-2">
@@ -295,25 +316,70 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
           </button>
         </div>
 
-        <div className="relative group bg-gradient-to-br from-gray-50 to-white rounded-xl p-12 border-2 border-dashed border-gray-300 hover:border-lime-neon text-center transition-all duration-300 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-lime-neon/0 to-lime-neon/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <div className="relative z-10">
-            <div className="w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-              <Play className="w-10 h-10 text-gray-400 group-hover:text-lime-neon transition-colors" />
-            </div>
-            <h3 className="text-xl font-bold mb-2 text-black">No hay videos aún</h3>
-            <p className="mb-6 text-gray-600">Sube tus mejores jugadas para mostrar tu talento</p>
-            <button 
-              onClick={onUploadVideo}
-              className="px-8 py-3 bg-lime-neon text-black rounded-lg font-bold hover:brightness-105 hover:shadow-lg hover:scale-105 transition-all duration-200"
-            >
-              Subir Primer Video
-            </button>
+        {loadingVideos ? (
+          <div className="text-center py-12">
+            <div className="w-12 h-12 border-4 border-lime-neon border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Cargando videos...</p>
           </div>
-        </div>
+        ) : videos.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {videos.map((video) => (
+              <div key={video._id} className="group cursor-pointer">
+                <div className="relative aspect-video rounded-xl overflow-hidden shadow-sm mb-3">
+                  <video 
+                    src={video.url} 
+                    className="absolute inset-0 w-full h-full object-cover"
+                    poster={video.thumbnail}
+                  />
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                    <div className="size-12 bg-lime-neon/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300">
+                      <Play className="w-6 h-6 text-black fill-black" />
+                    </div>
+                  </div>
+                  {video.duracion && (
+                    <span className="absolute bottom-3 right-3 bg-black/60 text-white text-[10px] px-2 py-1 rounded-md backdrop-blur-sm">
+                      {Math.floor(video.duracion / 60)}:{(video.duracion % 60).toString().padStart(2, '0')}
+                    </span>
+                  )}
+                </div>
+                <h4 className="font-bold text-sm line-clamp-1 group-hover:text-lime-neon transition-colors">{video.titulo}</h4>
+                {video.descripcion && (
+                  <p className="text-xs text-gray-600 line-clamp-1">{video.descripcion}</p>
+                )}
+                <div className="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                  <span className="flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    {new Date(video.createdAt).toLocaleDateString()}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Eye className="w-3 h-3" />
+                    {video.vistas || 0}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="relative group bg-gradient-to-br from-gray-50 to-white rounded-xl p-12 border-2 border-dashed border-gray-300 hover:border-lime-neon text-center transition-all duration-300 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-lime-neon/0 to-lime-neon/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative z-10">
+              <div className="w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Play className="w-10 h-10 text-gray-400 group-hover:text-lime-neon transition-colors" />
+              </div>
+              <h3 className="text-xl font-bold mb-2 text-black">No hay videos aún</h3>
+              <p className="mb-6 text-gray-600">Sube tus mejores jugadas para mostrar tu talento</p>
+              <button 
+                onClick={onUploadVideo}
+                className="px-8 py-3 bg-lime-neon text-black rounded-lg font-bold hover:brightness-105 hover:shadow-lg hover:scale-105 transition-all duration-200"
+              >
+                Subir Primer Video
+              </button>
+            </div>
+          </div>
+        )}
       </section>
 
-      {/* Ranking Progress Footer - CON EFECTOS */}
+      {/* Ranking Progress Footer */}
       <section className="relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border-2 border-gray-200 hover:border-lime-neon/50 hover:shadow-xl transition-all duration-300 overflow-hidden group">
         <div className="absolute inset-0 bg-gradient-to-br from-lime-neon/0 via-lime-neon/0 to-lime-neon/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
