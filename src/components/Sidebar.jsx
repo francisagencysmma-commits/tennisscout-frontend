@@ -33,7 +33,7 @@ const Sidebar = ({ activeSection, setActiveSection, playerData, onLogout }) => {
               onClick={() => setActiveSection(item.id)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl w-full transition-all duration-200 ${
                 isActive 
-                  ? 'bg-black text-lime-neon shadow-lg' 
+                  ? 'bg-green-600 text-white shadow-lg' 
                   : 'text-black hover:bg-black/10'
               }`}
             >
