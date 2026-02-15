@@ -9,9 +9,9 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
   ];
 
   return (
-    <div className="w-20 bg-dark-deepest border-r border-lime-neon/20 flex flex-col items-center py-8 space-y-6">
-      <div className="w-12 h-12 bg-lime-neon rounded-xl flex items-center justify-center shadow-neon mb-4">
-        <span className="text-2xl font-bold text-dark-deepest">T</span>
+    <div className="w-20 bg-black border-r border-gray-800 flex flex-col items-center py-8 space-y-6">
+      <div className="w-12 h-12 bg-lime-neon rounded-xl flex items-center justify-center shadow-lg mb-4">
+        <span className="text-2xl font-bold text-black">T</span>
       </div>
 
       <nav className="flex-1 flex flex-col space-y-4">
@@ -23,10 +23,10 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
             <button
               key={item.id}
               onClick={() => setActiveSection(item.id)}
-              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
+              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 ${
                 isActive 
-                  ? 'bg-lime-neon text-dark-deepest shadow-neon' 
-                  : 'text-white hover:bg-dark-light hover:text-lime-neon'
+                  ? 'bg-lime-neon text-black shadow-lg shadow-lime-neon/50' 
+                  : 'text-gray-400 hover:bg-gray-900 hover:text-lime-neon'
               }`}
               title={item.label}
             >
