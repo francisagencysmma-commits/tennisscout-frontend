@@ -75,6 +75,23 @@ function App() {
     return <Auth onAuthSuccess={handleAuthSuccess} />;
   }
 
+  // FUNCIÓN PARA ABRIR MODAL DE UPLOAD
+  const handleOpenUploadModal = () => {
+    console.log('Abriendo modal de upload');
+    setShowUploadModal(true);
+  };
+
+  const handleCloseUploadModal = () => {
+    console.log('Cerrando modal de upload');
+    setShowUploadModal(false);
+  };
+
+  const handleVideoUploadSuccess = (newVideo) => {
+    console.log('Video subido con éxito:', newVideo);
+    setShowUploadModal(false);
+    loadVideos(); // Recargar videos
+  };
+
   const renderVideos = () => {
     const videosToShow = videoTab === 'mis-videos' 
       ? videos.filter(video => video.jugadorId?._id === currentUser?._id || video.jugadorId === currentUser?._id)
@@ -83,36 +100,37 @@ function App() {
     return (
       <div className="space-y-6 animate-fadeIn">
         <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-bold" style={{color: '#000'}}>Videos</h2>
+          <h2 className="text-3xl font-bold text-black">Videos</h2>
           <button 
-            onClick={() => setShowUploadModal(true)} 
-            className="px-6 py-3 rounded-xl font-bold flex items-center gap-2"
-            style={{backgroundColor: '#cdff00', color: '#000'}}
+            onClick={handleOpenUploadModal}
+            className="px-6 py-3 rounded-xl font-bold flex items-center gap-2 bg-lime-neon text-black hover:brightness-105 transition-all"
           >
             <Upload className="w-4 h-4" />
             Subir Video
           </button>
         </div>
 
-        <div className="flex gap-4" style={{borderBottom: '2px solid #e5e5e5'}}>
+        <div className="flex gap-4 border-b-2 border-gray-200">
           <button 
             onClick={() => setVideoTab('mis-videos')} 
-            className={`px-6 py-3 font-bold transition-all relative`}
-            style={{color: videoTab === 'mis-videos' ? '#000' : '#999'}}
+            className={`px-6 py-3 font-bold transition-all relative ${
+              videoTab === 'mis-videos' ? 'text-black' : 'text-gray-400'
+            }`}
           >
             Mis Videos
             {videoTab === 'mis-videos' && (
-              <div className="absolute bottom-0 left-0 right-0 h-1" style={{backgroundColor: '#cdff00'}}></div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-lime-neon"></div>
             )}
           </button>
           <button 
             onClick={() => setVideoTab('explorar')} 
-            className={`px-6 py-3 font-bold transition-all relative`}
-            style={{color: videoTab === 'explorar' ? '#000' : '#999'}}
+            className={`px-6 py-3 font-bold transition-all relative ${
+              videoTab === 'explorar' ? 'text-black' : 'text-gray-400'
+            }`}
           >
             Explorar Videos
             {videoTab === 'explorar' && (
-              <div className="absolute bottom-0 left-0 right-0 h-1" style={{backgroundColor: '#cdff00'}}></div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-lime-neon"></div>
             )}
           </button>
         </div>
@@ -120,20 +138,20 @@ function App() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {videosToShow.length > 0 ? (
             videosToShow.map((video) => (
-              <div key={video._id} className="bg-white rounded-2xl overflow-hidden hover:scale-105 transition-transform border-2" style={{borderColor: '#e5e5e5'}}>
-                <div className="relative aspect-video" style={{backgroundColor: '#f5f5f5'}}>
+              <div key={video._id} className="bg-white rounded-2xl overflow-hidden hover:scale-105 transition-transform border-2 border-gray-200">
+                <div className="relative aspect-video bg-gray-200">
                   {video.url ? (
                     <video src={video.url} className="w-full h-full object-cover" controls />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Video className="w-12 h-12" style={{color: '#999'}} />
+                      <Video className="w-12 h-12 text-gray-400" />
                     </div>
                   )}
                 </div>
                 
                 <div className="p-4">
-                  <h4 className="font-bold mb-2" style={{color: '#000'}}>{video.titulo}</h4>
-                  <div className="flex items-center gap-4 text-sm" style={{color: '#666'}}>
+                  <h4 className="font-bold mb-2 text-black">{video.titulo}</h4>
+                  <div className="flex items-center gap-4 text-sm text-gray-600">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3.5 h-3.5" />
                       {new Date(video.createdAt).toLocaleDateString()}
@@ -147,16 +165,15 @@ function App() {
               </div>
             ))
           ) : (
-            <div className="col-span-full text-center py-16 bg-white rounded-2xl border-2" style={{borderColor: '#e5e5e5'}}>
-              <Video className="w-16 h-16 mx-auto mb-4" style={{color: '#999'}} />
-              <p className="mb-4" style={{color: '#666'}}>
+            <div className="col-span-full text-center py-16 bg-white rounded-2xl border-2 border-gray-200">
+              <Video className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+              <p className="mb-4 text-gray-600">
                 {videoTab === 'mis-videos' ? 'No has subido videos aún' : 'No hay videos disponibles'}
               </p>
               {videoTab === 'mis-videos' && (
                 <button 
-                  onClick={() => setShowUploadModal(true)}
-                  className="px-6 py-3 rounded-xl font-bold"
-                  style={{backgroundColor: '#cdff00', color: '#000'}}
+                  onClick={handleOpenUploadModal}
+                  className="px-6 py-3 rounded-xl font-bold bg-lime-neon text-black hover:brightness-105 transition-all"
                 >
                   Subir tu primer video
                 </button>
@@ -164,28 +181,6 @@ function App() {
             </div>
           )}
         </div>
-
-        {showUploadModal && (
-          <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2" style={{borderColor: '#cdff00'}}>
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-bold" style={{color: '#000'}}>Subir Video</h2>
-                  <button onClick={() => setShowUploadModal(false)} style={{color: '#999'}}>
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
-                <UploadVideo 
-                  playerId={currentUser?._id} 
-                  onUploadSuccess={(video) => { 
-                    setShowUploadModal(false); 
-                    loadVideos(); 
-                  }} 
-                />
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     );
   };
@@ -193,18 +188,18 @@ function App() {
   const renderSection = () => {
     switch (activeSection) {
       case 'profile': 
-        return <ProfileView playerData={currentUser} onUploadVideo={() => setShowUploadModal(true)} />;
+        return <ProfileView playerData={currentUser} onUploadVideo={handleOpenUploadModal} />;
       case 'videos': 
         return renderVideos();
       case 'explore': 
         return (<div className="animate-fadeIn"><PlayersList /></div>);
       default: 
-        return <ProfileView playerData={currentUser} onUploadVideo={() => setShowUploadModal(true)} />;
+        return <ProfileView playerData={currentUser} onUploadVideo={handleOpenUploadModal} />;
     }
   };
 
   return (
-    <div className="flex min-h-screen" style={{backgroundColor: '#f5f5f5'}}>
+    <div className="flex min-h-screen bg-gray-50">
       <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
       
       <main className="flex-1 flex flex-col">
@@ -218,6 +213,29 @@ function App() {
           <Footer />
         </div>
       </main>
+
+      {/* MODAL DE UPLOAD - IMPORTANTE */}
+      {showUploadModal && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-lime-neon shadow-2xl">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold text-black">Subir Video</h2>
+                <button 
+                  onClick={handleCloseUploadModal}
+                  className="text-gray-400 hover:text-black transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <UploadVideo 
+                playerId={currentUser?._id} 
+                onUploadSuccess={handleVideoUploadSuccess}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
