@@ -1,5 +1,5 @@
 import React from 'react';
-import { Edit, Upload, Play, MapPin, Trophy, Zap, Target, TrendingUp, Award, Clock } from 'lucide-react';
+import { Edit, Upload, Play, MapPin, Calendar, Trophy, ArrowRight, Plus } from 'lucide-react';
 
 const ProfileView = ({ playerData, onUploadVideo }) => {
   const calculateAge = (dateOfBirth) => {
@@ -14,275 +14,299 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
     return age;
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  };
+
   const age = calculateAge(playerData?.dateOfBirth);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 animate-fadeIn">
-      {/* Hero Section - Photo + Main Info */}
-      <div className="relative bg-gradient-to-br from-gray-50 to-white rounded-3xl overflow-hidden shadow-lg border-2 border-gray-100">
-        <div className="grid lg:grid-cols-5 gap-6 p-8">
-          {/* Photo Column */}
-          <div className="lg:col-span-2">
-            <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-br from-lime-neon to-yellow-400 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity"></div>
-              <div className="relative bg-black rounded-2xl overflow-hidden aspect-[3/4] border-4 border-white shadow-2xl transform group-hover:scale-[1.02] transition-transform">
-                {playerData?.fotoPerfil ? (
-                  <img 
-                    src={playerData.fotoPerfil} 
-                    alt={playerData.fullName || playerData.nombre}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
-                    <span className="text-7xl font-bold text-lime-neon">
-                      {(playerData?.fullName || playerData?.nombre || 'T').charAt(0)}
-                    </span>
-                  </div>
-                )}
+    <main className="max-w-[1200px] mx-auto px-4 py-8">
+      {/* Hero Section */}
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        <div className="lg:col-span-2 relative overflow-hidden rounded-xl bg-white shadow-sm border border-gray-200 flex flex-col md:flex-row">
+          {/* Photo */}
+          <div 
+            className="md:w-1/3 aspect-[3/4] md:aspect-auto bg-cover bg-center min-h-[350px]"
+            style={{
+              backgroundImage: playerData?.fotoPerfil 
+                ? `url(${playerData.fotoPerfil})` 
+                : 'linear-gradient(135deg, #1a1a1a 0%, #000 100%)'
+            }}
+          >
+            {!playerData?.fotoPerfil && (
+              <div className="w-full h-full flex items-center justify-center text-6xl font-bold text-lime-neon">
+                {(playerData?.fullName || playerData?.nombre || 'T').charAt(0)}
               </div>
-            </div>
+            )}
           </div>
 
-          {/* Info Column */}
-          <div className="lg:col-span-3 flex flex-col justify-between">
-            {/* Header */}
+          {/* Info */}
+          <div className="p-8 flex flex-col justify-between flex-1">
             <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="px-4 py-1.5 bg-lime-neon rounded-full shadow-lg">
-                  <span className="text-xs font-bold uppercase text-black">⚡ Pro Circuit</span>
-                </div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="bg-lime-neon/20 text-black text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border border-lime-neon/30">
+                  PRO CIRCUIT
+                </span>
                 {playerData?.country && (
-                  <div className="flex items-center gap-1.5 text-gray-600">
+                  <span className="flex items-center gap-1 text-gray-600 text-sm font-medium">
                     <MapPin className="w-4 h-4" />
-                    <span className="text-sm font-medium">{playerData.country}</span>
-                  </div>
+                    {playerData.country}
+                  </span>
                 )}
               </div>
 
-              <h1 className="text-5xl font-bold text-black mb-2 leading-tight">
+              <h1 className="text-4xl font-extrabold text-black mb-1">
                 {playerData?.fullName || playerData?.nombre || 'Player Name'}
               </h1>
 
               {playerData?.nationalRanking && (
-                <div className="flex items-baseline gap-2 mb-6">
-                  <span className="text-gray-500">Ranking Nacional:</span>
-                  <span className="text-3xl font-bold text-lime-neon">{playerData.nationalRanking}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Quick Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="bg-white rounded-xl p-3 border border-gray-200 hover:border-lime-neon hover:shadow-lg transition-all">
-                <div className="text-xs text-gray-500 mb-1">Edad</div>
-                <div className="text-2xl font-bold text-black">{age}</div>
-              </div>
-
-              {playerData?.handedness && (
-                <div className="bg-white rounded-xl p-3 border border-gray-200 hover:border-lime-neon hover:shadow-lg transition-all">
-                  <div className="text-xs text-gray-500 mb-1">Mano</div>
-                  <div className="text-2xl font-bold text-black">{playerData.handedness}</div>
-                </div>
+                <p className="text-xl text-gray-600 font-medium mb-6">
+                  Ranking Nacional: <span className="text-black font-bold">{playerData.nationalRanking}</span>
+                </p>
               )}
 
-              {playerData?.height && (
-                <div className="bg-white rounded-xl p-3 border border-gray-200 hover:border-lime-neon hover:shadow-lg transition-all">
-                  <div className="text-xs text-gray-500 mb-1">Altura</div>
-                  <div className="text-2xl font-bold text-black">{playerData.height}<span className="text-sm">cm</span></div>
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                <div className="flex flex-col border-l-2 border-lime-neon pl-3">
+                  <span className="text-[10px] uppercase text-gray-600 font-bold tracking-tighter">Edad / Nacimiento</span>
+                  <span className="text-lg font-bold text-black">
+                    {age} años {playerData?.dateOfBirth && `(${formatDate(playerData.dateOfBirth)})`}
+                  </span>
                 </div>
-              )}
 
-              {playerData?.weight && (
-                <div className="bg-white rounded-xl p-3 border border-gray-200 hover:border-lime-neon hover:shadow-lg transition-all">
-                  <div className="text-xs text-gray-500 mb-1">Peso</div>
-                  <div className="text-2xl font-bold text-black">{playerData.weight}<span className="text-sm">kg</span></div>
-                </div>
-              )}
-            </div>
-
-            {/* Action Button */}
-            <button className="mt-6 w-full py-3.5 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-900 transition-all shadow-lg hover:shadow-xl">
-              <Edit className="w-5 h-5" />
-              Editar Perfil
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Cards Row */}
-      <div className="grid md:grid-cols-4 gap-4">
-        {playerData?.yearsPlaying > 0 && (
-          <div className="bg-gradient-to-br from-blue-50 to-white p-5 rounded-2xl border border-blue-100 hover:shadow-lg transition-all">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-                <Target className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-sm font-medium text-gray-600">Años Jugando</span>
-            </div>
-            <div className="text-3xl font-bold text-black">{playerData.yearsPlaying}</div>
-          </div>
-        )}
-
-        {playerData?.ageStartedPlaying > 0 && (
-          <div className="bg-gradient-to-br from-purple-50 to-white p-5 rounded-2xl border border-purple-100 hover:shadow-lg transition-all">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-sm font-medium text-gray-600">Empezó a los</span>
-            </div>
-            <div className="text-3xl font-bold text-black">{playerData.ageStartedPlaying} años</div>
-          </div>
-        )}
-
-        {playerData?.officialTournamentsPlayed > 0 && (
-          <div className="bg-gradient-to-br from-orange-50 to-white p-5 rounded-2xl border border-orange-100 hover:shadow-lg transition-all">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
-                <Trophy className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-sm font-medium text-gray-600">Torneos</span>
-            </div>
-            <div className="text-3xl font-bold text-black">{playerData.officialTournamentsPlayed}</div>
-          </div>
-        )}
-
-        {playerData?.weeklyTrainingHours > 0 && (
-          <div className="bg-gradient-to-br from-lime-50 to-white p-5 rounded-2xl border border-lime-200 hover:shadow-lg transition-all">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-lime-neon rounded-lg flex items-center justify-center">
-                <Clock className="w-5 h-5 text-black" />
-              </div>
-              <span className="text-sm font-medium text-gray-600">Horas Semanales</span>
-            </div>
-            <div className="text-3xl font-bold text-black">{playerData.weeklyTrainingHours}h</div>
-          </div>
-        )}
-      </div>
-
-      {/* Playing Style Section */}
-      {(playerData?.strongestStroke || playerData?.playingStyle || playerData?.firstServeConsistency || playerData?.currentCoachOrAcademy) && (
-        <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100">
-          <div className="flex items-center gap-3 mb-6">
-            <Zap className="w-6 h-6 text-lime-neon" />
-            <h2 className="text-3xl font-bold text-black">Estilo de Juego</h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {playerData?.strongestStroke && (
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-br from-lime-neon/20 to-yellow-400/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative bg-gray-50 p-5 rounded-xl border-2 border-gray-200 group-hover:border-lime-neon transition-all">
-                  <div className="text-xs font-bold uppercase text-gray-500 mb-2">Golpe Potente</div>
-                  <div className="text-2xl font-bold text-black italic mb-1">{playerData.strongestStroke}</div>
-                  <div className="text-xs text-gray-600">Arma principal</div>
-                </div>
-              </div>
-            )}
-
-            {playerData?.playingStyle && (
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-400/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative bg-gray-50 p-5 rounded-xl border-2 border-gray-200 group-hover:border-blue-500 transition-all">
-                  <div className="text-xs font-bold uppercase text-gray-500 mb-2">Estilo</div>
-                  <div className="text-2xl font-bold text-black mb-1">{playerData.playingStyle}</div>
-                  <div className="text-xs text-gray-600">Estrategia</div>
-                </div>
-              </div>
-            )}
-
-            {playerData?.firstServeConsistency > 0 && (
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 to-lime-400/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative bg-gray-50 p-5 rounded-xl border-2 border-gray-200 group-hover:border-green-500 transition-all">
-                  <div className="text-xs font-bold uppercase text-gray-500 mb-2">1er Saque</div>
-                  <div className="flex items-center justify-center my-2">
-                    <div className="relative w-16 h-16">
-                      <svg className="w-16 h-16 transform -rotate-90">
-                        <circle cx="32" cy="32" r="28" fill="none" stroke="#e5e5e5" strokeWidth="4" />
-                        <circle 
-                          cx="32" 
-                          cy="32" 
-                          r="28" 
-                          fill="none" 
-                          stroke="#cdff00" 
-                          strokeWidth="4"
-                          strokeDasharray={`${2 * Math.PI * 28}`}
-                          strokeDashoffset={`${2 * Math.PI * 28 * (1 - playerData.firstServeConsistency / 100)}`}
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-lg font-bold text-black">{playerData.firstServeConsistency}%</span>
-                      </div>
-                    </div>
+                {playerData?.handedness && (
+                  <div className="flex flex-col border-l-2 border-lime-neon pl-3">
+                    <span className="text-[10px] uppercase text-gray-600 font-bold tracking-tighter">Mano Dominante</span>
+                    <span className="text-lg font-bold text-black">{playerData.handedness}</span>
                   </div>
-                  <div className="text-xs text-gray-600 text-center">Consistencia</div>
-                </div>
-              </div>
-            )}
+                )}
 
-            {playerData?.currentCoachOrAcademy && (
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-400/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative bg-gray-50 p-5 rounded-xl border-2 border-gray-200 group-hover:border-purple-500 transition-all">
-                  <div className="text-xs font-bold uppercase text-gray-500 mb-2">Entrenador</div>
-                  <div className="text-2xl font-bold text-black mb-1">{playerData.currentCoachOrAcademy}</div>
-                  <div className="text-xs text-gray-600">Coach actual</div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+                {playerData?.nationalRanking && (
+                  <div className="flex flex-col border-l-2 border-lime-neon pl-3 mt-4">
+                    <span className="text-[10px] uppercase text-gray-600 font-bold tracking-tighter">Ranking Nacional</span>
+                    <span className="text-lg font-bold text-black">{playerData.nationalRanking}</span>
+                  </div>
+                )}
 
-      {/* Injury History */}
-      {playerData?.injuryHistory && (
-        <div className="bg-gradient-to-br from-gray-900 to-black rounded-3xl p-6 text-white shadow-2xl">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs font-bold uppercase text-lime-neon mb-2">Historial de Lesiones</div>
-              <div className="text-xl font-bold mb-2">{playerData.injuryHistory}</div>
+                {playerData?.currentCoachOrAcademy && (
+                  <div className="flex flex-col border-l-2 border-lime-neon pl-3 mt-4">
+                    <span className="text-[10px] uppercase text-gray-600 font-bold tracking-tighter">Entrenador</span>
+                    <span className="text-lg font-bold text-black">{playerData.currentCoachOrAcademy}</span>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="px-4 py-2 bg-lime-neon rounded-full">
-              <span className="text-sm font-bold text-black">✓ Recuperado</span>
+
+            <div className="flex flex-wrap gap-3">
+              <button className="bg-lime-neon w-full text-black font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:brightness-105 transition-all shadow-md">
+                <Edit className="w-5 h-5" />
+                Editar Perfil
+              </button>
             </div>
           </div>
         </div>
-      )}
 
-      {/* Videos Section */}
-      <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100">
+        {/* Equipment & Physical Sidebar */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col gap-6">
+          <h3 className="text-lg font-bold flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-lime-neon" />
+            Físico y Equipo
+          </h3>
+
+          <div className="space-y-4">
+            {(playerData?.height || playerData?.weight) && (
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <span className="text-gray-600">📏</span>
+                  <span className="text-sm font-medium">Altura / Peso</span>
+                </div>
+                <span className="font-bold text-sm">
+                  {playerData.height > 0 && `${playerData.height} cm`}
+                  {playerData.height > 0 && playerData.weight > 0 && ' / '}
+                  {playerData.weight > 0 && `${playerData.weight} kg`}
+                </span>
+              </div>
+            )}
+
+            {playerData?.yearsPlaying > 0 && (
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Calendar className="w-4 h-4 text-gray-600" />
+                  <span className="text-sm font-medium">Años Jugando</span>
+                </div>
+                <span className="font-bold">{playerData.yearsPlaying} años</span>
+              </div>
+            )}
+
+            {playerData?.ageStartedPlaying > 0 && (
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <span className="text-gray-600">👶</span>
+                  <span className="text-sm font-medium">Empezó a los</span>
+                </div>
+                <span className="font-bold">{playerData.ageStartedPlaying} años</span>
+              </div>
+            )}
+
+            {playerData?.officialTournamentsPlayed > 0 && (
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Trophy className="w-4 h-4 text-gray-600" />
+                  <span className="text-sm font-medium">Torneos Oficiales</span>
+                </div>
+                <span className="font-bold">Sí</span>
+              </div>
+            )}
+          </div>
+
+          {playerData?.weeklyTrainingHours > 0 && (
+            <div className="mt-auto pt-4 border-t border-gray-100">
+              <div className="flex items-center justify-between text-sm mb-2">
+                <span className="text-gray-600">Disponibilidad</span>
+                <span className="text-green-600 font-bold flex items-center gap-1">
+                  <span className="w-2 h-2 bg-green-600 rounded-full animate-pulse"></span>
+                  {playerData.weeklyTrainingHours}h semanales
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* IA Powered Stats Dashboard */}
+      <section className="mb-12">
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-lime-neon to-yellow-400 rounded-xl flex items-center justify-center shadow-lg">
-              <Play className="w-6 h-6 text-black" />
-            </div>
-            <h2 className="text-3xl font-bold text-black">Mejores Jugadas</h2>
-          </div>
-          <button 
-            onClick={onUploadVideo}
-            className="px-6 py-3 bg-black text-white rounded-xl font-bold flex items-center gap-2 hover:bg-gray-900 transition-all shadow-lg hover:shadow-xl"
-          >
-            <Upload className="w-5 h-5" />
-            Añadir Clip
+          <h2 className="text-2xl font-extrabold flex items-center gap-2">Información Técnica</h2>
+          <button className="text-sm font-bold flex items-center gap-1 text-gray-600 hover:text-black">
+            Ver informe completo <ArrowRight className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-12 border-2 border-dashed border-gray-300 text-center hover:border-lime-neon transition-all">
-          <div className="w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Play className="w-10 h-10 text-gray-400" />
-          </div>
-          <h3 className="text-xl font-bold mb-2 text-black">Sin videos todavía</h3>
-          <p className="mb-6 text-gray-600">Sube tus mejores momentos y destaca tu talento</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Most Powerful Shot */}
+          {playerData?.strongestStroke && (
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+              <p className="text-[10px] uppercase font-bold text-gray-600 mb-1">Golpe más potente</p>
+              <p className="text-2xl font-black italic text-black">{playerData.strongestStroke}</p>
+              <div className="mt-4 p-2 bg-lime-neon/10 rounded-lg text-[11px] font-medium">
+                Dominio de derecha invertida
+              </div>
+            </div>
+          )}
+
+          {/* Playing Style */}
+          {playerData?.playingStyle && (
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+              <p className="text-[10px] uppercase font-bold text-gray-600 mb-1">Estilo de Juego</p>
+              <p className="text-xl font-black text-black">{playerData.playingStyle}</p>
+              <p className="text-[10px] mt-4 font-bold text-gray-600">Preferencia: Pista Rápida</p>
+            </div>
+          )}
+
+          {/* 1st Serve Consistency */}
+          {playerData?.firstServeConsistency > 0 && (
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col items-center">
+              <p className="text-[10px] uppercase font-bold text-gray-600 mb-4 w-full">Consistencia 1er Saque</p>
+              <div className="relative flex items-center justify-center">
+                <svg className="w-16 h-16">
+                  <circle 
+                    className="text-gray-100" 
+                    cx="32" 
+                    cy="32" 
+                    fill="transparent" 
+                    r="28" 
+                    stroke="currentColor" 
+                    strokeWidth="6"
+                  />
+                  <circle 
+                    className="text-lime-neon" 
+                    cx="32" 
+                    cy="32" 
+                    fill="transparent" 
+                    r="28" 
+                    stroke="currentColor" 
+                    strokeDasharray="175.9" 
+                    strokeDashoffset={175.9 * (1 - playerData.firstServeConsistency / 100)}
+                    strokeLinecap="round" 
+                    strokeWidth="6" 
+                    style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
+                  />
+                </svg>
+                <span className="absolute text-sm font-black text-black">{playerData.firstServeConsistency}%</span>
+              </div>
+            </div>
+          )}
+
+          {/* Injury History */}
+          {playerData?.injuryHistory && (
+            <div className="bg-black p-6 rounded-xl border border-black shadow-lg text-white">
+              <p className="text-[10px] uppercase font-bold text-lime-neon mb-1">Historial Lesiones</p>
+              <p className="text-sm font-medium">{playerData.injuryHistory}</p>
+              <div className="mt-4 flex items-center gap-2">
+                <span className="w-2 h-2 bg-lime-neon rounded-full"></span>
+                <span className="text-[11px] font-bold text-lime-neon">Totalmente recuperado</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Video Gallery */}
+      <section className="mb-12">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-extrabold flex items-center gap-2">
+            <Play className="w-6 h-6 text-lime-neon" />
+            Mis Mejores Jugadas
+          </h2>
           <button 
             onClick={onUploadVideo}
-            className="px-8 py-3 bg-lime-neon text-black rounded-xl font-bold hover:shadow-lg transition-all"
+            className="bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all"
+          >
+            <Plus className="w-4 h-4" />
+            Añadir Nuevo Clip
+          </button>
+        </div>
+
+        <div className="bg-gray-50 rounded-xl p-12 border-2 border-dashed border-gray-300 text-center">
+          <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Play className="w-10 h-10 text-gray-400" />
+          </div>
+          <h3 className="text-xl font-bold mb-2 text-black">No hay videos aún</h3>
+          <p className="mb-6 text-gray-600">Sube tus mejores jugadas para mostrar tu talento</p>
+          <button 
+            onClick={onUploadVideo}
+            className="px-8 py-3 bg-lime-neon text-black rounded-lg font-bold hover:brightness-105 transition-all"
           >
             Subir Primer Video
           </button>
         </div>
-      </div>
-    </div>
+      </section>
+
+      {/* Ranking Progress Footer */}
+      <section className="bg-gray-50 rounded-2xl p-8 border border-gray-200">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="max-w-md">
+            <h3 className="text-xl font-extrabold mb-2 italic uppercase text-black">Trayectoria Ascendente</h3>
+            <p className="text-sm text-gray-600 font-medium leading-relaxed">
+              {playerData?.fullName || playerData?.nombre} está en constante progreso. 
+              Su dedicación y rendimiento lo sitúan como una promesa sólida en el circuito.
+            </p>
+          </div>
+          <div className="flex gap-4">
+            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 text-center min-w-[120px]">
+              <p className="text-[10px] font-black text-gray-600 uppercase">Puntos</p>
+              <p className="text-2xl font-black text-black">1,420</p>
+            </div>
+            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 text-center min-w-[120px]">
+              <p className="text-[10px] font-black text-gray-600 uppercase">Win Rate</p>
+              <p className="text-2xl font-black text-green-600">72%</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 };
 
