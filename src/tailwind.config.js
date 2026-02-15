@@ -19,10 +19,10 @@ module.exports = {
           lighter: '#3a3a3a',
         },
         cream: {
-          50: '#fefef8',
-          100: '#fdfdf0',
-          200: '#fcfce8',
-          300: '#fafad8',
+          50: '#0a0a0a',
+          100: '#1a1a1a',
+          200: '#666666',
+          300: '#999999',
         },
         forest: {
           dark: '#1e3a1e',
