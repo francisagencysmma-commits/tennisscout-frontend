@@ -3,11 +3,11 @@ import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Auth from './components/Auth';
 import Landing from './components/Landing';
-import Footer from './components/Footer';
 import ProfileView from './components/ProfileView';
 import UploadVideo from './components/UploadVideo';
 import PlayersList from './components/PlayersList';
 import { Video, Upload, X, Calendar, Eye } from 'lucide-react';
+import Footer from './components/Footer';
 
 function App() {
   const [activeSection, setActiveSection] = useState('profile');
@@ -245,7 +245,12 @@ function App() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
+      <Sidebar 
+  activeSection={activeSection} 
+  setActiveSection={setActiveSection}
+  playerData={currentUser}
+  onLogout={handleLogout}
+/>
       
       <main className="flex-1 flex flex-col">
         <Header playerData={currentUser} onLogout={handleLogout} />
