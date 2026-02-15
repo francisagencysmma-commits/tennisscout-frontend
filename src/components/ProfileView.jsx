@@ -14,17 +14,11 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
     return age;
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  };
-
   const age = calculateAge(playerData?.dateOfBirth);
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 animate-fadeIn">
-      {/* Top Section: Photo + Info + Physical */}
+      {/* Top Section */}
       <div className="grid lg:grid-cols-3 gap-4">
         {/* Photo */}
         <div className="lg:col-span-1">
@@ -44,74 +38,78 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
         </div>
 
         {/* Player Info */}
-        <div className="lg:col-span-1 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-lime-neon">
-            <Trophy className="w-3 h-3 text-black" />
-            <span className="text-xs font-bold uppercase text-black">Pro Circuit</span>
-          </div>
-
-          {playerData?.country && (
-            <div className="flex items-center gap-2 text-sm">
-              <MapPin className="w-4 h-4 text-lime-neon" />
-              <span className="text-gray-700">{playerData.country}</span>
-            </div>
-          )}
-
-          <h1 className="text-4xl font-bold text-black leading-tight">
-            {playerData?.fullName || playerData?.nombre || 'Player Name'}
-          </h1>
-
-          {playerData?.nationalRanking && (
-            <div className="text-lg">
-              <span className="text-gray-600">Ranking Nacional: </span>
-              <span className="font-bold text-lime-neon">{playerData.nationalRanking}</span>
-            </div>
-          )}
-
-          <div className="grid grid-cols-2 gap-3 pt-2">
-            <div className="bg-white rounded-lg p-3 border-2 border-gray-200">
-              <div className="text-xs font-bold uppercase mb-1 text-gray-600">Edad</div>
-              <div className="text-lg font-bold text-black">{age} años</div>
+        <div className="lg:col-span-1">
+          <div className="flex flex-col h-full">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-lime-neon w-fit mb-2">
+              <Trophy className="w-3 h-3 text-black" />
+              <span className="text-xs font-bold uppercase text-black">Pro Circuit</span>
             </div>
 
-            {playerData?.handedness && (
-              <div className="bg-white rounded-lg p-3 border-2 border-gray-200">
-                <div className="text-xs font-bold uppercase mb-1 text-gray-600">Mano</div>
-                <div className="text-lg font-bold text-black">{playerData.handedness}</div>
+            {playerData?.country && (
+              <div className="flex items-center gap-2 text-sm mb-2">
+                <MapPin className="w-4 h-4 text-lime-neon" />
+                <span className="text-gray-700">{playerData.country}</span>
               </div>
             )}
+
+            <h1 className="text-4xl font-bold text-black leading-tight mb-2">
+              {playerData?.fullName || playerData?.nombre || 'Player Name'}
+            </h1>
 
             {playerData?.nationalRanking && (
-              <div className="bg-white rounded-lg p-3 border-2 border-gray-200">
-                <div className="text-xs font-bold uppercase mb-1 text-gray-600">Ranking</div>
-                <div className="text-lg font-bold text-black">{playerData.nationalRanking}</div>
+              <div className="text-lg mb-3">
+                <span className="text-gray-600">Ranking Nacional: </span>
+                <span className="font-bold text-lime-neon">{playerData.nationalRanking}</span>
               </div>
             )}
 
-            {playerData?.currentCoachOrAcademy && (
-              <div className="bg-white rounded-lg p-3 border-2 border-gray-200">
-                <div className="text-xs font-bold uppercase mb-1 text-gray-600">Entrenador</div>
-                <div className="text-lg font-bold text-black">{playerData.currentCoachOrAcademy}</div>
+            {/* Info Grid - SIN ESPACIOS GRANDES */}
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <div className="bg-white rounded-lg p-2.5 border-2 border-gray-200">
+                <div className="text-xs font-bold uppercase text-gray-600">Edad</div>
+                <div className="text-base font-bold text-black">{age} años</div>
               </div>
-            )}
+
+              {playerData?.handedness && (
+                <div className="bg-white rounded-lg p-2.5 border-2 border-gray-200">
+                  <div className="text-xs font-bold uppercase text-gray-600">Mano</div>
+                  <div className="text-base font-bold text-black">{playerData.handedness}</div>
+                </div>
+              )}
+
+              {playerData?.nationalRanking && (
+                <div className="bg-white rounded-lg p-2.5 border-2 border-gray-200">
+                  <div className="text-xs font-bold uppercase text-gray-600">Ranking</div>
+                  <div className="text-base font-bold text-black">{playerData.nationalRanking}</div>
+                </div>
+              )}
+
+              {playerData?.currentCoachOrAcademy && (
+                <div className="bg-white rounded-lg p-2.5 border-2 border-gray-200">
+                  <div className="text-xs font-bold uppercase text-gray-600">Entrenador</div>
+                  <div className="text-base font-bold text-black">{playerData.currentCoachOrAcademy}</div>
+                </div>
+              )}
+            </div>
+
+            {/* Botón Editar - AL FINAL */}
+            <button className="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 bg-lime-neon text-black hover:opacity-90 text-sm mt-auto">
+              <Edit className="w-4 h-4" />
+              Editar Perfil
+            </button>
           </div>
-
-          <button className="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 bg-lime-neon text-black hover:opacity-90 text-sm">
-            <Edit className="w-4 h-4" />
-            Editar Perfil
-          </button>
         </div>
 
         {/* Physical Stats */}
-        <div className="lg:col-span-1 space-y-3">
-          <div className="flex items-center gap-2 mb-2">
+        <div className="lg:col-span-1">
+          <div className="flex items-center gap-2 mb-3">
             <Zap className="w-5 h-5 text-lime-neon" />
             <h3 className="text-lg font-bold text-black">Físico y Equipo</h3>
           </div>
 
           <div className="space-y-2">
             {(playerData?.height || playerData?.weight) && (
-              <div className="bg-white rounded-lg p-3 border-2 border-gray-200 flex items-center justify-between">
+              <div className="bg-white rounded-lg p-2.5 border-2 border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Ruler className="w-4 h-4 text-gray-600" />
                   <span className="font-bold text-black text-sm">Altura / Peso</span>
@@ -125,7 +123,7 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
             )}
 
             {playerData?.yearsPlaying > 0 && (
-              <div className="bg-white rounded-lg p-3 border-2 border-gray-200 flex items-center justify-between">
+              <div className="bg-white rounded-lg p-2.5 border-2 border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-gray-600" />
                   <span className="font-bold text-black text-sm">Años Jugando</span>
@@ -135,7 +133,7 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
             )}
 
             {playerData?.ageStartedPlaying > 0 && (
-              <div className="bg-white rounded-lg p-3 border-2 border-gray-200 flex items-center justify-between">
+              <div className="bg-white rounded-lg p-2.5 border-2 border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Activity className="w-4 h-4 text-gray-600" />
                   <span className="font-bold text-black text-sm">Empezó a los</span>
@@ -145,7 +143,7 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
             )}
 
             {playerData?.officialTournamentsPlayed > 0 && (
-              <div className="bg-white rounded-lg p-3 border-2 border-gray-200 flex items-center justify-between">
+              <div className="bg-white rounded-lg p-2.5 border-2 border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Trophy className="w-4 h-4 text-gray-600" />
                   <span className="font-bold text-black text-sm">Torneos</span>
@@ -155,7 +153,7 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
             )}
 
             {playerData?.weeklyTrainingHours > 0 && (
-              <div className="bg-lime-neon rounded-lg p-3 border-2 border-lime-neon">
+              <div className="bg-lime-neon rounded-lg p-2.5 border-2 border-lime-neon">
                 <div className="flex items-center gap-2 mb-1">
                   <Clock className="w-4 h-4 text-black" />
                   <span className="font-bold text-black text-sm">Disponibilidad</span>
@@ -169,15 +167,15 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
         </div>
       </div>
 
-      {/* Technical Info - MÁS COMPACTO */}
+      {/* Technical Info */}
       <div>
-        <h2 className="text-2xl font-bold text-black mb-4">Información Técnica</h2>
+        <h2 className="text-2xl font-bold text-black mb-3">Información Técnica</h2>
 
-        <div className="grid md:grid-cols-4 gap-4">
+        <div className="grid md:grid-cols-4 gap-3">
           {playerData?.strongestStroke && (
-            <div className="bg-white rounded-xl p-4 border-2 border-gray-200">
+            <div className="bg-white rounded-xl p-3 border-2 border-gray-200">
               <div className="text-xs font-bold uppercase mb-1 text-gray-600">Golpe Más Potente</div>
-              <div className="text-2xl font-bold mb-1 text-black italic">
+              <div className="text-xl font-bold mb-1 text-black italic">
                 {playerData.strongestStroke}
               </div>
               <div className="text-xs text-gray-600">Dominio invertido</div>
@@ -185,9 +183,9 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
           )}
 
           {playerData?.playingStyle && (
-            <div className="bg-white rounded-xl p-4 border-2 border-gray-200">
+            <div className="bg-white rounded-xl p-3 border-2 border-gray-200">
               <div className="text-xs font-bold uppercase mb-1 text-gray-600">Estilo de Juego</div>
-              <div className="text-2xl font-bold mb-1 text-black">
+              <div className="text-xl font-bold mb-1 text-black">
                 {playerData.playingStyle}
               </div>
               <div className="text-xs text-gray-600">Pista Rápida</div>
@@ -195,9 +193,9 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
           )}
 
           {playerData?.firstServeConsistency > 0 && (
-            <div className="bg-white rounded-xl p-4 border-2 border-gray-200">
+            <div className="bg-white rounded-xl p-3 border-2 border-gray-200">
               <div className="text-xs font-bold uppercase mb-1 text-gray-600">1er Saque</div>
-              <div className="relative pt-2 flex justify-center">
+              <div className="relative pt-1 flex justify-center">
                 <div className="relative w-20 h-20">
                   <svg className="w-20 h-20 transform -rotate-90">
                     <circle cx="40" cy="40" r="35" fill="none" stroke="#e5e5e5" strokeWidth="6" />
@@ -221,7 +219,7 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
           )}
 
           {playerData?.injuryHistory && (
-            <div className="bg-black rounded-xl p-4 text-white">
+            <div className="bg-black rounded-xl p-3 text-white">
               <div className="text-xs font-bold uppercase mb-1 text-lime-neon">Lesiones</div>
               <div className="text-sm font-bold mb-2 text-white">{playerData.injuryHistory}</div>
               <div className="inline-block px-2 py-1 rounded-full text-xs font-bold bg-lime-neon text-black">
@@ -232,9 +230,9 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
         </div>
       </div>
 
-      {/* Videos - MÁS COMPACTO */}
+      {/* Videos */}
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Play className="w-5 h-5 text-lime-neon" />
             <h2 className="text-2xl font-bold text-black">Mis Mejores Jugadas</h2>
