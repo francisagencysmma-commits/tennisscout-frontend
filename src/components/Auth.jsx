@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { login, register } from '../services/api';
-import { User, Mail, Lock, Trophy, ArrowRight, Shield } from 'lucide-react';
+import { User, Mail, Lock, Trophy, ArrowRight } from 'lucide-react';
+import OnboardingForm from './OnboardingForm';
 
 const Auth = ({ onAuthSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [tempPlayer, setTempPlayer] = useState(null);
   
   const [formData, setFormData] = useState({
     nombre: '',
@@ -30,6 +33,14 @@ const Auth = ({ onAuthSuccess }) => {
       let response;
       if (isLogin) {
         response = await login({ email: formData.email, password: formData.password });
+        
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('player', JSON.stringify(response.player));
+          onAuthSuccess(response.player);
+        } else {
+          setError(response.error || 'Error en login');
+        }
       } else {
         response = await register({
           nombre: formData.nombre,
@@ -37,16 +48,17 @@ const Auth = ({ onAuthSuccess }) => {
           password: formData.password,
           pais: formData.pais,
           edad: parseInt(formData.edad),
-          utrRating: parseFloat(formData.utrRating)
+          utrRating: parseFloat(formData.utrRating) || 0
         });
-      }
 
-      if (response.token) {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('player', JSON.stringify(response.player));
-        onAuthSuccess(response.player);
-      } else {
-        setError(response.error || 'Error en la autenticación');
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('player', JSON.stringify(response.player));
+          setTempPlayer(response.player);
+          setShowOnboarding(true);
+        } else {
+          setError(response.error || 'Error en registro');
+        }
       }
     } catch (err) {
       setError('Error de conexión');
@@ -55,6 +67,43 @@ const Auth = ({ onAuthSuccess }) => {
       setLoading(false);
     }
   };
+
+  const handleOnboardingComplete = async (onboardingData) => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`https://tennisscout-backend.onrender.com/api/players/${tempPlayer._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(onboardingData)
+      });
+
+      const updatedPlayer = await response.json();
+      
+      localStorage.setItem('player', JSON.stringify(updatedPlayer));
+      onAuthSuccess(updatedPlayer);
+    } catch (error) {
+      console.error('Error actualizando perfil:', error);
+      onAuthSuccess(tempPlayer);
+    }
+  };
+
+  const handleOnboardingSkip = () => {
+    onAuthSuccess(tempPlayer);
+  };
+
+  if (showOnboarding) {
+    return (
+      <OnboardingForm 
+        initialData={tempPlayer}
+        onComplete={handleOnboardingComplete}
+        onSkip={handleOnboardingSkip}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
@@ -75,59 +124,38 @@ const Auth = ({ onAuthSuccess }) => {
           <h1 className="text-5xl font-display font-bold text-center mb-4">
             <span className="gradient-text-lime">TennisScout</span>
             <br />
-            <span className="text-cream-50">AI</span>
+            <span className="text-white">AI</span>
           </h1>
-          <p className="text-cream-200 text-center max-w-md mb-12">
-            Master the Court with AI-Driven Insights
+          <p className="text-gray-300 text-center max-w-md mb-12">
+            Crea tu perfil profesional y conecta con scouts y academias
           </p>
-
-          <div className="space-y-6 max-w-md w-full">
-            {[
-              { icon: Trophy, title: 'AI Stroke Analysis', desc: 'Real-time biomechanical feedback' },
-              { icon: Shield, title: 'Scout Reporting', desc: 'Professional-grade PDF reports' },
-              { icon: User, title: 'Performance Tracking', desc: 'Data-driven historical metrics' }
-            ].map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <div key={i} className="flex items-start gap-4 bg-forest-light/30 rounded-xl p-4 backdrop-blur-sm">
-                  <div className="w-12 h-12 bg-lime-neon/20 rounded-lg flex items-center justify-center border border-lime-neon/30">
-                    <Icon className="w-6 h-6 text-lime-neon" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-cream-50 mb-1">{item.title}</h3>
-                    <p className="text-sm text-cream-300">{item.desc}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </div>
       </div>
 
       {/* Right - Form */}
-      <div className="flex items-center justify-center p-6 lg:p-12 bg-cream-50 relative">
+      <div className="flex items-center justify-center p-6 lg:p-12 bg-white relative">
         <div className="w-full max-w-md">
           <div className="lg:hidden text-center mb-8">
             <div className="w-16 h-16 bg-lime-neon rounded-xl flex items-center justify-center mx-auto mb-4 shadow-neon">
-              <Trophy className="w-10 h-10 text-dark-deepest" />
+              <Trophy className="w-10 h-10 text-black" />
             </div>
             <h1 className="text-3xl font-display font-bold gradient-text-lime">TennisScout AI</h1>
           </div>
 
           <div className="mb-8 animate-fadeIn">
-            <h2 className="text-4xl font-display font-bold text-dark-deepest mb-2">
-              {isLogin ? 'Welcome Back' : 'Join the Network'}
+            <h2 className="text-4xl font-display font-bold text-black mb-2">
+              {isLogin ? 'Bienvenido' : 'Únete Ahora'}
             </h2>
-            <p className="text-dark-light">
-              {isLogin ? 'Log in to your scout dashboard' : 'Create your player account'}
+            <p className="text-gray-600">
+              {isLogin ? 'Inicia sesión en tu cuenta' : 'Crea tu perfil profesional'}
             </p>
           </div>
 
-          <div className="flex gap-2 mb-8 bg-dark-deepest/5 rounded-xl p-1">
+          <div className="flex gap-2 mb-8 bg-gray-100 rounded-xl p-1">
             <button
               onClick={() => { setIsLogin(true); setError(''); }}
               className={`flex-1 py-3 rounded-lg font-bold transition-all ${
-                isLogin ? 'bg-lime-neon text-dark-deepest shadow-neon' : 'text-dark-light'
+                isLogin ? 'bg-lime-neon text-black shadow-neon' : 'text-gray-600'
               }`}
             >
               Login
@@ -135,15 +163,15 @@ const Auth = ({ onAuthSuccess }) => {
             <button
               onClick={() => { setIsLogin(false); setError(''); }}
               className={`flex-1 py-3 rounded-lg font-bold transition-all ${
-                !isLogin ? 'bg-lime-neon text-dark-deepest shadow-neon' : 'text-dark-light'
+                !isLogin ? 'bg-lime-neon text-black shadow-neon' : 'text-gray-600'
               }`}
             >
-              Sign Up
+              Registro
             </button>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-600/20 border-2 border-red-600 rounded-xl text-red-900 text-sm font-medium">
+            <div className="mb-6 p-4 bg-red-100 border-2 border-red-500 rounded-xl text-red-700 text-sm font-medium">
               {error}
             </div>
           )}
@@ -151,16 +179,16 @@ const Auth = ({ onAuthSuccess }) => {
           <form onSubmit={handleSubmit} className="space-y-5">
             {!isLogin && (
               <div>
-                <label className="block text-sm font-bold text-dark-deepest mb-2">Full Name</label>
+                <label className="block text-sm font-bold text-black mb-2">Nombre Completo</label>
                 <div className="relative">
-                  <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-dark-light" />
+                  <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
                     name="nombre"
                     value={formData.nombre}
                     onChange={handleChange}
                     required={!isLogin}
-                    className="w-full pl-12 pr-4 py-4 bg-white border-2 border-dark-deepest/10 text-dark-deepest rounded-xl focus:border-lime-neon transition-all"
+                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 text-black rounded-xl focus:border-lime-neon transition-all"
                     placeholder="Rafael Nadal"
                   />
                 </div>
@@ -168,32 +196,32 @@ const Auth = ({ onAuthSuccess }) => {
             )}
 
             <div>
-              <label className="block text-sm font-bold text-dark-deepest mb-2">Email Address</label>
+              <label className="block text-sm font-bold text-black mb-2">Email</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-dark-light" />
+                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full pl-12 pr-4 py-4 bg-white border-2 border-dark-deepest/10 text-dark-deepest rounded-xl focus:border-lime-neon transition-all"
-                  placeholder="scout@tennisai.com"
+                  className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 text-black rounded-xl focus:border-lime-neon transition-all"
+                  placeholder="tu@email.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-dark-deepest mb-2">Password</label>
+              <label className="block text-sm font-bold text-black mb-2">Contraseña</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-dark-light" />
+                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="w-full pl-12 pr-4 py-4 bg-white border-2 border-dark-deepest/10 text-dark-deepest rounded-xl focus:border-lime-neon transition-all"
+                  className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 text-black rounded-xl focus:border-lime-neon transition-all"
                   placeholder="••••••••"
                 />
               </div>
@@ -203,38 +231,40 @@ const Auth = ({ onAuthSuccess }) => {
               <>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-bold text-dark-deepest mb-2">País</label>
+                    <label className="block text-sm font-bold text-black mb-2">País</label>
                     <input
                       type="text"
                       name="pais"
                       value={formData.pais}
                       onChange={handleChange}
-                      className="w-full px-4 py-4 bg-white border-2 border-dark-deepest/10 rounded-xl focus:border-lime-neon"
+                      required
+                      className="w-full px-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-lime-neon"
                       placeholder="España"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-dark-deepest mb-2">Edad</label>
+                    <label className="block text-sm font-bold text-black mb-2">Edad</label>
                     <input
                       type="number"
                       name="edad"
                       value={formData.edad}
                       onChange={handleChange}
-                      className="w-full px-4 py-4 bg-white border-2 border-dark-deepest/10 rounded-xl focus:border-lime-neon"
+                      required
+                      className="w-full px-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-lime-neon"
                       placeholder="17"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-dark-deepest mb-2">UTR Rating</label>
+                  <label className="block text-sm font-bold text-black mb-2">UTR Rating (opcional)</label>
                   <input
                     type="number"
                     step="0.1"
                     name="utrRating"
                     value={formData.utrRating}
                     onChange={handleChange}
-                    className="w-full px-4 py-4 bg-white border-2 border-dark-deepest/10 rounded-xl focus:border-lime-neon"
+                    className="w-full px-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-lime-neon"
                     placeholder="12.4"
                   />
                 </div>
@@ -244,24 +274,24 @@ const Auth = ({ onAuthSuccess }) => {
             <button
               type="submit"
               disabled={loading}
-              className="btn-neon w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 disabled:opacity-50"
+              className="btn-neon w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 disabled:opacity-50 text-black"
             >
-              {loading ? 'Loading...' : (
+              {loading ? 'Cargando...' : (
                 <>
-                  <span>{isLogin ? 'Get Started' : 'Create Account'}</span>
+                  <span>{isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}</span>
                   <ArrowRight className="w-5 h-5" />
                 </>
               )}
             </button>
           </form>
 
-          <div className="mt-8 text-center text-dark-light text-sm">
-            {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
+          <div className="mt-8 text-center text-gray-600 text-sm">
+            {isLogin ? "¿No tienes cuenta?" : '¿Ya tienes cuenta?'}{' '}
             <button
               onClick={() => { setIsLogin(!isLogin); setError(''); }}
-              className="text-dark-deepest font-bold hover:text-lime-neon"
+              className="text-black font-bold hover:text-lime-neon"
             >
-              {isLogin ? 'Join the Network' : 'Sign in'}
+              {isLogin ? 'Regístrate' : 'Inicia sesión'}
             </button>
           </div>
         </div>

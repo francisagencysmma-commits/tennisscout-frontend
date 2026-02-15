@@ -65,14 +65,14 @@ const Landing = ({ onLoginClick }) => {
             </div>
           </div>
 
-          {/* Hero Image */}
+          {/* Hero Image - NUEVA IMAGEN */}
           <div className="relative animate-slideUp">
             <div className="relative rounded-3xl overflow-hidden shadow-dark">
               <img 
-                src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80"
-                alt="Tennis player"
-                className="w-full h-[500px] object-cover"
-              />
+  src="https://i.ibb.co/BH15Cx9s/Tenis-Day.jpg"
+  alt="Tennis players"
+  className="w-full h-[500px] object-cover"
+/>
               <div className="absolute inset-0 bg-gradient-to-t from-dark-deepest/80 to-transparent" />
               
               {/* Floating Stats */}
