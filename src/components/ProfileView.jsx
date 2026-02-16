@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Edit, Upload, Play, MapPin, Calendar, Trophy, ArrowRight, Plus, Zap, Eye } from 'lucide-react';
+import EditProfileModal from './EditProfileModal';
 
 const ProfileView = ({ playerData, onUploadVideo }) => {
   const [videos, setVideos] = useState([]);
   const [loadingVideos, setLoadingVideos] = useState(true);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const calculateAge = (dateOfBirth) => {
     if (!dateOfBirth) return playerData?.edad || 0;
@@ -131,7 +133,10 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
             </div>
 
             <div className="space-y-3">
-              <button className="bg-lime-neon w-full text-black font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:brightness-105 hover:shadow-lg hover:scale-[1.02] transition-all shadow-md">
+              <button 
+                onClick={() => setShowEditModal(true)}
+                className="bg-lime-neon w-full text-black font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:brightness-105 hover:shadow-lg hover:scale-[1.02] transition-all shadow-md"
+              >
                 <Edit className="w-5 h-5" />
                 Editar Perfil
               </button>
@@ -329,7 +334,7 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
         </div>
       </section>
 
-      {/* Video Gallery - CON VIDEOS REALES Y REPRODUCIBLES */}
+      {/* Video Gallery */}
       <section className="mb-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-extrabold flex items-center gap-2">
@@ -434,6 +439,17 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
           </div>
         </div>
       </section>
+
+      {/* Modal Editar Perfil */}
+      {showEditModal && (
+        <EditProfileModal 
+          playerData={playerData}
+          onClose={() => setShowEditModal(false)}
+          onSave={(updatedPlayer) => {
+            window.location.reload();
+          }}
+        />
+      )}
     </main>
   );
 };
