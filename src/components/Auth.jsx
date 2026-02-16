@@ -130,7 +130,7 @@ const Auth = ({ onAuthSuccess }) => {
       <div className="relative hidden w-full items-center justify-center lg:flex lg:w-3/5">
         {/* Background Image */}
         <div className="absolute inset-0 bg-cover bg-center" style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1622163642998-1ea32b0bbc67?w=1200&q=80')"
+          backgroundImage: "url(https://collection.cloudinary.com/dfiw0rscm/4a060510e7bc933e0daf339da5c57e24)"
         }}>
           <div className="absolute inset-0 bg-gradient-to-r from-gray-900/85 to-green-600/20"></div>
         </div>
