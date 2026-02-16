@@ -12,7 +12,7 @@ const Landing = ({ onLoginClick }) => {
               <Trophy className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <span className="text-base sm:text-xl font-black tracking-tight text-gray-900">
-              TennisScout <span className="text-green-600">AI</span>
+              PadelScout <span className="text-green-600">AI</span>
             </span>
           </div>
           
@@ -61,12 +61,12 @@ const Landing = ({ onLoginClick }) => {
                 </div>
 
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black leading-[1.1] tracking-tight text-gray-900">
-                  Eleva tu Carrera <br/>
+                  Eleva tu Pádel <br/>
                   <span className="text-green-600">con IA</span>
                 </h1>
 
                 <p className="max-w-xl mx-auto lg:mx-0 text-base sm:text-lg md:text-xl text-gray-700">
-                  Sé descubierto. Analiza tu juego. Gana. Insights profesionales para la próxima generación de campeones.
+                  Sé descubierto. Analiza tu juego. Gana. Insights profesionales para la próxima generación de campeones del pádel.
                 </p>
 
                 <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 pt-2 sm:pt-4 justify-center lg:justify-start">
@@ -88,11 +88,11 @@ const Landing = ({ onLoginClick }) => {
                 <div className="absolute inset-0 bg-lime-neon/20 rounded-2xl sm:rounded-3xl blur-2xl"></div>
                 <div className="relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden border-2 sm:border-4 border-green-200 shadow-2xl">
                   <img 
-                    alt="Jugador profesional de tenis" 
+                    alt="Jugador profesional de pádel" 
                     className="w-full h-64 sm:h-80 lg:h-96 object-cover" 
-                    src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80"
+                    src="https://www.bestennisacademy.it/wp-content/uploads/2025/04/DL-Padel-13.09.236229-1-scaled-1.jpg"
                     onError={(e) => {
-                      e.target.src = "https://images.unsplash.com/photo-1622163642998-1ea32b0bbc67?w=800&q=80";
+                      e.target.src = "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80";
                     }}
                   />
                   
@@ -135,7 +135,7 @@ const Landing = ({ onLoginClick }) => {
               <div className="h-8 sm:h-12 w-px bg-green-200 hidden sm:block"></div>
               <div className="flex flex-col gap-1">
                 <span className="text-2xl sm:text-4xl font-black text-green-600">50+</span>
-                <span className="text-[10px] sm:text-sm font-medium uppercase tracking-widest text-gray-600">Academias</span>
+                <span className="text-[10px] sm:text-sm font-medium uppercase tracking-widest text-gray-600">Clubes</span>
               </div>
             </div>
           </div>
@@ -146,7 +146,7 @@ const Landing = ({ onLoginClick }) => {
           <div className="container mx-auto px-4 sm:px-6 lg:px-20">
             <div className="mb-12 sm:mb-16 text-center">
               <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-gray-900">Impulsado por IA de Precisión</h2>
-              <p className="mx-auto mt-3 sm:mt-4 max-w-2xl text-sm sm:text-base text-gray-700">Nuestra plataforma usa visión computacional de última generación.</p>
+              <p className="mx-auto mt-3 sm:mt-4 max-w-2xl text-sm sm:text-base text-gray-700">Nuestra plataforma usa visión computacional de última generación para analizar tu pádel.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
@@ -157,7 +157,7 @@ const Landing = ({ onLoginClick }) => {
                 </div>
                 <h3 className="mb-2 sm:mb-3 text-lg sm:text-xl font-bold text-gray-900">Análisis de Video IA</h3>
                 <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-                  Obtén feedback biomecánico instantáneo de tu saque, golpes de fondo y juego de pies.
+                  Obtén feedback instantáneo de tu bandeja, volea, remate y posicionamiento en pista.
                 </p>
               </div>
 
@@ -168,7 +168,7 @@ const Landing = ({ onLoginClick }) => {
                 </div>
                 <h3 className="mb-2 sm:mb-3 text-lg sm:text-xl font-bold text-gray-900">Estadísticas Avanzadas</h3>
                 <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-                  Más allá del marcador. Rastrea errores no forzados y profundidad con mapas de calor.
+                  Más allá del marcador. Rastrea errores no forzados, winners y efectividad de red con mapas de calor.
                 </p>
               </div>
 
@@ -179,7 +179,7 @@ const Landing = ({ onLoginClick }) => {
                 </div>
                 <h3 className="mb-2 sm:mb-3 text-lg sm:text-xl font-bold text-gray-900">Red de Scouts</h3>
                 <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-                  Conecta directamente con coaches universitarios y scouts profesionales.
+                  Conecta directamente con entrenadores de clubes profesionales y scouts del circuito WPT.
                 </p>
               </div>
             </div>
@@ -191,7 +191,7 @@ const Landing = ({ onLoginClick }) => {
           <div className="container mx-auto px-4 sm:px-6 lg:px-20">
             <div className="mb-12 sm:mb-20 flex flex-col items-center gap-4 sm:gap-6 md:flex-row md:justify-between text-center md:text-left">
               <div className="max-w-xl">
-                <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-gray-900">Tu Camino a los Profesionales</h2>
+                <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-gray-900">Tu Camino al Circuito Pro</h2>
                 <p className="mt-3 sm:mt-4 text-sm sm:text-base text-gray-700">Un proceso simple de tres pasos.</p>
               </div>
               <button 
@@ -212,7 +212,7 @@ const Landing = ({ onLoginClick }) => {
                   <Trophy className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
                 </div>
                 <h4 className="mb-2 text-lg sm:text-xl font-bold text-gray-900">Graba y Sube</h4>
-                <p className="text-xs sm:text-sm text-gray-700 max-w-xs">Filma tu práctica con cualquier smartphone y súbelo a nuestra nube.</p>
+                <p className="text-xs sm:text-sm text-gray-700 max-w-xs">Filma tu partido con cualquier smartphone y súbelo a nuestra plataforma.</p>
               </div>
 
               {/* Step 2 */}
@@ -221,7 +221,7 @@ const Landing = ({ onLoginClick }) => {
                   <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
                 </div>
                 <h4 className="mb-2 text-lg sm:text-xl font-bold text-gray-900">Procesamiento IA</h4>
-                <p className="text-xs sm:text-sm text-gray-700 max-w-xs">Nuestros algoritmos analizan miles de puntos de datos.</p>
+                <p className="text-xs sm:text-sm text-gray-700 max-w-xs">Nuestros algoritmos analizan miles de puntos de datos de tu juego.</p>
               </div>
 
               {/* Step 3 */}
@@ -230,7 +230,7 @@ const Landing = ({ onLoginClick }) => {
                   <ArrowRight className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
                 </div>
                 <h4 className="mb-2 text-lg sm:text-xl font-bold text-gray-900">Comparte y Crece</h4>
-                <p className="text-xs sm:text-sm text-gray-700 max-w-xs">Publica tu perfil o comparte informes con coaches.</p>
+                <p className="text-xs sm:text-sm text-gray-700 max-w-xs">Publica tu perfil o comparte informes con entrenadores y clubes.</p>
               </div>
             </div>
           </div>
@@ -240,8 +240,8 @@ const Landing = ({ onLoginClick }) => {
         <section className="py-12 sm:py-24 bg-gradient-to-r from-lime-neon via-green-300 to-lime-neon">
           <div className="container mx-auto px-4 sm:px-6 lg:px-20">
             <div className="text-center">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-3 sm:mb-4">¿Listo para un ace?</h2>
-              <p className="text-base sm:text-lg font-medium text-gray-800 mb-6 sm:mb-10 max-w-2xl mx-auto">Únete a la red élite de jugadores usando datos para dominar la cancha.</p>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-3 sm:mb-4">¿Listo para dominar la pista?</h2>
+              <p className="text-base sm:text-lg font-medium text-gray-800 mb-6 sm:mb-10 max-w-2xl mx-auto">Únete a la red élite de jugadores usando datos para conquistar el pádel profesional.</p>
               
               <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
                 <button 
@@ -268,10 +268,10 @@ const Landing = ({ onLoginClick }) => {
                 <div className="flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-lime-neon text-gray-900">
                   <Trophy className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <span className="text-base sm:text-lg font-black tracking-tight text-gray-900">TennisScout AI</span>
+                <span className="text-base sm:text-lg font-black tracking-tight text-gray-900">PadelScout AI</span>
               </div>
               <p className="text-xs sm:text-sm leading-relaxed text-gray-700">
-                El futuro del scouting y análisis de rendimiento en tenis.
+                El futuro del scouting y análisis de rendimiento en pádel.
               </p>
             </div>
 
@@ -313,7 +313,7 @@ const Landing = ({ onLoginClick }) => {
           </div>
 
           <div className="mt-12 sm:mt-20 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 border-t-2 border-green-200 pt-6 sm:pt-8">
-            <p className="text-[10px] sm:text-xs text-gray-600 text-center sm:text-left">© 2024 TennisScout AI. Todos los derechos reservados.</p>
+            <p className="text-[10px] sm:text-xs text-gray-600 text-center sm:text-left">© 2024 PadelScout AI. Todos los derechos reservados.</p>
             <div className="flex gap-4 sm:gap-6 text-gray-600 text-xs sm:text-sm">
               <a className="hover:text-green-600 transition-colors" href="#">Twitter</a>
               <a className="hover:text-green-600 transition-colors" href="#">Instagram</a>
