@@ -7,7 +7,7 @@ import Header from './components/Header';
 import ProfileView from './components/ProfileView';
 import VideosSection from './components/VideosSection';
 import PublicProfile from './components/PublicProfile';
-import UploadVideoModal from './components/UploadVideoModal';
+import UploadVideoModal from './components/Uploadvideomodal';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Upload, Calendar, Eye, Plus, Search, Filter } from 'lucide-react';
-import UploadVideoModal from './Uploadvideomodal';
+import UploadVideoModal from './UploadVideoModal ';
 
 const VideosSection = ({ currentUser }) => {
   const [videos, setVideos] = useState([]);
