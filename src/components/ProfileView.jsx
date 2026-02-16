@@ -33,7 +33,6 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
         const response = await fetch('https://tennisscout-backend.onrender.com/api/videos');
         const allVideos = await response.json();
         
-        // Filtrar solo los videos de este jugador
         const playerVideos = allVideos.filter(video => 
           (video.jugadorId?._id || video.jugadorId) === playerData._id
         );
@@ -131,43 +130,43 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="space-y-3">
               <button className="bg-lime-neon w-full text-black font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:brightness-105 hover:shadow-lg hover:scale-[1.02] transition-all shadow-md">
                 <Edit className="w-5 h-5" />
                 Editar Perfil
               </button>
-              // Añade estos botones en ProfileView.jsx, dentro del hero section después de "Editar Perfil"
 
-<div className="flex flex-wrap gap-3 mt-3">
-  <button 
-    onClick={() => {
-      const profileUrl = `${window.location.origin}/player/${playerData._id}`;
-      navigator.clipboard.writeText(profileUrl);
-      alert('¡Link copiado al portapapeles!');
-    }}
-    className="flex-1 bg-white border-2 border-gray-200 text-black font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:border-lime-neon hover:shadow-lg transition-all"
-  >
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-    </svg>
-    Copiar Link
-  </button>
-  
-  <button 
-    onClick={() => {
-      const profileUrl = `${window.location.origin}/player/${playerData._id}`;
-      const subject = encodeURIComponent(`Perfil de ${playerData.fullName || playerData.nombre} - TennisScout AI`);
-      const body = encodeURIComponent(`Hola,\n\nTe comparto el perfil de ${playerData.fullName || playerData.nombre} en TennisScout AI:\n\n${profileUrl}\n\nSaludos`);
-      window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    }}
-    className="flex-1 bg-lime-neon text-black font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:brightness-110 hover:shadow-lg transition-all"
-  >
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-    </svg>
-    Share with Scouts
-  </button>
-</div>
+              {/* Botones de compartir */}
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => {
+                    const profileUrl = `https://tennisscout-frontend.vercel.app/player/${playerData._id}`;
+                    navigator.clipboard.writeText(profileUrl);
+                    alert('¡Link copiado al portapapeles!');
+                  }}
+                  className="flex-1 bg-white border-2 border-gray-200 text-black font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:border-lime-neon hover:shadow-lg transition-all text-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  Copiar Link
+                </button>
+                
+                <button 
+                  onClick={() => {
+                    const profileUrl = `https://tennisscout-frontend.vercel.app/player/${playerData._id}`;
+                    const subject = encodeURIComponent(`Perfil de ${playerData.fullName || playerData.nombre} - TennisScout AI`);
+                    const body = encodeURIComponent(`Hola,\n\nTe comparto el perfil de ${playerData.fullName || playerData.nombre} en TennisScout AI:\n\n${profileUrl}\n\nSaludos`);
+                    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+                  }}
+                  className="flex-1 bg-lime-neon text-black font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:brightness-110 hover:shadow-lg transition-all text-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Share
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -331,86 +330,88 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
       </section>
 
       {/* Video Gallery - CON VIDEOS REALES Y REPRODUCIBLES */}
-<section className="mb-12">
-  <div className="flex items-center justify-between mb-6">
-    <h2 className="text-2xl font-extrabold flex items-center gap-2">
-      <div className="w-10 h-10 bg-gradient-to-br from-lime-neon to-yellow-400 rounded-lg flex items-center justify-center shadow-lg">
-        <Play className="w-6 h-6 text-black" />
-      </div>
-      Mis Mejores Jugadas
-    </h2>
-    <button 
-      onClick={onUploadVideo}
-      className="bg-white border-2 border-gray-200 hover:bg-gray-50 hover:border-lime-neon hover:shadow-lg px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all duration-200"
-    >
-      <Plus className="w-4 h-4" />
-      Añadir Nuevo Clip
-    </button>
-  </div>
+      <section className="mb-12">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-extrabold flex items-center gap-2">
+            <div className="w-10 h-10 bg-gradient-to-br from-lime-neon to-yellow-400 rounded-lg flex items-center justify-center shadow-lg">
+              <Play className="w-6 h-6 text-black" />
+            </div>
+            Mis Mejores Jugadas
+          </h2>
+          <button 
+            onClick={onUploadVideo}
+            className="bg-white border-2 border-gray-200 hover:bg-gray-50 hover:border-lime-neon hover:shadow-lg px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all duration-200"
+          >
+            <Plus className="w-4 h-4" />
+            Añadir Nuevo Clip
+          </button>
+        </div>
 
-  {loadingVideos ? (
-    <div className="text-center py-12">
-      <div className="w-12 h-12 border-4 border-lime-neon border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-      <p className="text-gray-600">Cargando videos...</p>
-    </div>
-  ) : videos.length > 0 ? (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {videos.map((video) => (
-        <div key={video._id} className="bg-white rounded-xl overflow-hidden shadow-lg border-2 border-gray-200 hover:shadow-2xl hover:scale-105 transition-all duration-300">
-          <div className="relative aspect-video bg-black">
-            <video 
-              src={video.url} 
-              className="w-full h-full object-cover"
-              controls
-              preload="metadata"
-            >
-              Tu navegador no soporta video HTML5.
-            </video>
+        {loadingVideos ? (
+          <div className="text-center py-12">
+            <div className="w-12 h-12 border-4 border-lime-neon border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Cargando videos...</p>
           </div>
-          
-          <div className="p-4">
-            <h4 className="font-bold text-sm mb-2 text-black line-clamp-2">{video.titulo}</h4>
-            {video.descripcion && (
-              <p className="text-xs text-gray-600 mb-3 line-clamp-2">{video.descripcion}</p>
-            )}
-            <div className="flex items-center gap-3 text-xs text-gray-500">
-              <span className="flex items-center gap-1">
-                <Calendar className="w-3 h-3" />
-                {new Date(video.createdAt).toLocaleDateString('es-ES')}
-              </span>
-              <span className="flex items-center gap-1">
-                <Eye className="w-3 h-3" />
-                {video.vistas || 0}
-              </span>
-              {video.duracion > 0 && (
-                <span className="ml-auto font-medium text-black">
-                  {Math.floor(video.duracion / 60)}:{(video.duracion % 60).toString().padStart(2, '0')}
-                </span>
-              )}
+        ) : videos.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {videos.map((video) => (
+              <div key={video._id} className="bg-white rounded-xl overflow-hidden shadow-lg border-2 border-gray-200 hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div className="relative aspect-video bg-black">
+                  <video 
+                    src={video.url} 
+                    className="w-full h-full object-cover"
+                    controls
+                    preload="metadata"
+                  >
+                    Tu navegador no soporta video HTML5.
+                  </video>
+                </div>
+                
+                <div className="p-4">
+                  <h4 className="font-bold text-sm mb-2 text-black line-clamp-2">{video.titulo}</h4>
+                  {video.descripcion && (
+                    <p className="text-xs text-gray-600 mb-3 line-clamp-2">{video.descripcion}</p>
+                  )}
+                  <div className="flex items-center gap-3 text-xs text-gray-500">
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {new Date(video.createdAt).toLocaleDateString('es-ES')}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Eye className="w-3 h-3" />
+                      {video.vistas || 0}
+                    </span>
+                    {video.duracion > 0 && (
+                      <span className="ml-auto font-medium text-black">
+                        {Math.floor(video.duracion / 60)}:{(video.duracion % 60).toString().padStart(2, '0')}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="relative group bg-gradient-to-br from-gray-50 to-white rounded-xl p-12 border-2 border-dashed border-gray-300 hover:border-lime-neon text-center transition-all duration-300 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-lime-neon/0 to-lime-neon/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative z-10">
+              <div className="w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Play className="w-10 h-10 text-gray-400 group-hover:text-lime-neon transition-colors" />
+              </div>
+              <h3 className="text-xl font-bold mb-2 text-black">No hay videos aún</h3>
+              <p className="mb-6 text-gray-600">Sube tus mejores jugadas para mostrar tu talento</p>
+              <button 
+                onClick={onUploadVideo}
+                className="px-8 py-3 bg-lime-neon text-black rounded-lg font-bold hover:brightness-105 hover:shadow-lg hover:scale-105 transition-all duration-200"
+              >
+                Subir Primer Video
+              </button>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
-  ) : (
-    <div className="relative group bg-gradient-to-br from-gray-50 to-white rounded-xl p-12 border-2 border-dashed border-gray-300 hover:border-lime-neon text-center transition-all duration-300 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-lime-neon/0 to-lime-neon/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-      <div className="relative z-10">
-        <div className="w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-          <Play className="w-10 h-10 text-gray-400 group-hover:text-lime-neon transition-colors" />
-        </div>
-        <h3 className="text-xl font-bold mb-2 text-black">No hay videos aún</h3>
-        <p className="mb-6 text-gray-600">Sube tus mejores jugadas para mostrar tu talento</p>
-        <button 
-          onClick={onUploadVideo}
-          className="px-8 py-3 bg-lime-neon text-black rounded-lg font-bold hover:brightness-105 hover:shadow-lg hover:scale-105 transition-all duration-200"
-        >
-          Subir Primer Video
-        </button>
-      </div>
-    </div>
-  )}
-</section>
+        )}
+      </section>
+
+      {/* Ranking Progress Footer */}
       <section className="relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border-2 border-gray-200 hover:border-lime-neon/50 hover:shadow-xl transition-all duration-300 overflow-hidden group">
         <div className="absolute inset-0 bg-gradient-to-br from-lime-neon/0 via-lime-neon/0 to-lime-neon/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
