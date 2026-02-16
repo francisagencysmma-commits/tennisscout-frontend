@@ -1,87 +1,96 @@
 import React from 'react';
-import { ArrowRight, TrendingUp, Video, Users, Trophy } from 'lucide-react';
+import { ArrowRight, Video, TrendingUp, Shield, Users } from 'lucide-react';
 
 const Landing = ({ onLoginClick }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div className="space-y-8 animate-fadeIn">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-lime-neon/10 border border-lime-neon/20 rounded-full">
-                <Trophy className="w-4 h-4 text-lime-neon" />
-                <span className="text-sm font-semibold text-gray-700">Plataforma #1 de Reclutamiento</span>
-              </div>
+        {/* Animated background */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-20 left-20 w-72 h-72 bg-lime-neon rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-lime-neon rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+          {/* Logo */}
+          <div className="text-center mb-16">
+            <h1 className="text-6xl font-extrabold mb-4">
+              <span className="bg-gradient-to-r from-lime-neon to-green-400 bg-clip-text text-transparent">
+                TennisScout
+              </span>
+              <span className="text-white"> AI</span>
+            </h1>
+            <p className="text-xl text-gray-400">La plataforma definitiva para jugadores de tenis</p>
+          </div>
+
+          {/* Main Hero Content */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-20">
+            {/* Left side - Text */}
+            <div className="space-y-8 text-center lg:text-left">
+              <h2 className="text-5xl lg:text-6xl font-extrabold text-white leading-tight">
+                Eleva tu juego al
+                <span className="block bg-gradient-to-r from-lime-neon to-green-400 bg-clip-text text-transparent">
+                  siguiente nivel
+                </span>
+              </h2>
               
-              <h1 className="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
-                Conecta tu <span className="text-lime-neon">Talento</span> con el Mundo
-              </h1>
-              
-              <p className="text-xl text-gray-600 leading-relaxed">
-                TennisScout AI usa inteligencia artificial para analizar tu juego, 
-                crear tu perfil profesional y conectarte con academias y scouts de élite.
+              <p className="text-xl text-gray-300 leading-relaxed">
+                Conecta con scouts profesionales, sube videos de tus partidos y 
+                recibe análisis con IA para mejorar tu técnica.
               </p>
 
-              <div className="flex flex-wrap gap-4">
-                <button 
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <button
                   onClick={onLoginClick}
-                  className="px-8 py-4 bg-lime-neon text-black font-bold rounded-xl hover:brightness-110 transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+                  className="px-8 py-4 bg-lime-neon text-black font-bold rounded-xl hover:shadow-lg hover:shadow-lime-neon/50 transition-all flex items-center justify-center gap-2 group"
                 >
-                  Comenzar Gratis
-                  <ArrowRight className="w-5 h-5" />
+                  Comenzar Ahora
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
                 
-                <button className="px-8 py-4 bg-white text-gray-900 font-bold rounded-xl border-2 border-gray-200 hover:border-lime-neon transition-all">
+                <button className="px-8 py-4 bg-white/10 text-white font-bold rounded-xl border-2 border-white/20 hover:bg-white/20 transition-all backdrop-blur-sm">
                   Ver Demo
                 </button>
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-200">
-                <div>
-                  <div className="text-3xl font-bold text-gray-900">500+</div>
-                  <div className="text-sm text-gray-600">Jugadores</div>
+              <div className="grid grid-cols-3 gap-6 pt-8">
+                <div className="text-center lg:text-left">
+                  <div className="text-3xl font-bold text-lime-neon">500+</div>
+                  <div className="text-sm text-gray-400">Jugadores</div>
                 </div>
-                <div>
-                  <div className="text-3xl font-bold text-gray-900">50+</div>
-                  <div className="text-sm text-gray-600">Academias</div>
+                <div className="text-center lg:text-left">
+                  <div className="text-3xl font-bold text-lime-neon">50+</div>
+                  <div className="text-sm text-gray-400">Scouts</div>
                 </div>
-                <div>
-                  <div className="text-3xl font-bold text-gray-900">95%</div>
-                  <div className="text-sm text-gray-600">Éxito</div>
+                <div className="text-center lg:text-left">
+                  <div className="text-3xl font-bold text-lime-neon">95%</div>
+                  <div className="text-sm text-gray-400">Éxito</div>
                 </div>
               </div>
             </div>
 
-            {/* Right Image */}
-            <div className="relative lg:h-[600px] animate-fadeIn">
-              <div className="absolute inset-0 bg-lime-neon/10 rounded-3xl blur-3xl"></div>
-              <div className="relative h-full rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+            {/* Right side - Image */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-lime-neon/20 rounded-3xl blur-2xl"></div>
+              <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl overflow-hidden border-2 border-lime-neon/30 shadow-2xl">
                 <img 
-                  src="https://images.unsplash.com/photo-1622163642998-1ea32b0bbc67?w=800&q=80"
-                  alt="Jugador de tenis profesional"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.src = "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80";
-                  }}
+                  src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80" 
+                  alt="Tennis Player"
+                  className="w-full h-96 object-cover opacity-90"
                 />
-                {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
                 
                 {/* Floating card */}
-                <div className="absolute bottom-8 left-8 right-8 bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-100">
-                  <div className="flex items-center gap-4">
+                <div className="absolute bottom-6 left-6 right-6 bg-black/80 backdrop-blur-md border border-lime-neon/30 rounded-2xl p-4">
+                  <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-lime-neon rounded-full flex items-center justify-center">
-                      <TrendingUp className="w-6 h-6 text-black" />
+                      <Video className="w-6 h-6 text-black" />
                     </div>
                     <div>
-                      <div className="text-sm text-gray-600">Análisis en Tiempo Real</div>
-                      <div className="text-xl font-bold text-gray-900">IA Avanzada</div>
+                      <p className="text-white font-bold">Análisis en Tiempo Real</p>
+                      <p className="text-gray-400 text-sm">Powered by AI</p>
                     </div>
                   </div>
                 </div>
@@ -92,64 +101,68 @@ const Landing = ({ onLoginClick }) => {
       </div>
 
       {/* Features Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Todo lo que necesitas para destacar
-          </h2>
-          <p className="text-xl text-gray-600">
-            Herramientas profesionales al alcance de tu mano
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Feature 1 */}
-          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all">
-            <div className="w-12 h-12 bg-lime-neon/10 rounded-xl flex items-center justify-center mb-6">
-              <Video className="w-6 h-6 text-lime-neon" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Análisis de Video IA</h3>
-            <p className="text-gray-600">
-              Sube tus videos y recibe análisis detallado de técnica, velocidad y estrategia.
+      <div className="bg-black/50 backdrop-blur-sm py-20 border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Todo lo que necesitas
+            </h2>
+            <p className="text-xl text-gray-400">
+              Herramientas profesionales para jugadores ambiciosos
             </p>
           </div>
 
-          {/* Feature 2 */}
-          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all">
-            <div className="w-12 h-12 bg-lime-neon/10 rounded-xl flex items-center justify-center mb-6">
-              <Users className="w-6 h-6 text-lime-neon" />
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-white/10 hover:border-lime-neon/50 transition-all group">
+              <div className="w-14 h-14 bg-lime-neon/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-lime-neon/20 transition-all">
+                <Video className="w-7 h-7 text-lime-neon" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Videos y Análisis</h3>
+              <p className="text-gray-400">
+                Sube videos de tus partidos y recibe análisis detallado con IA avanzada.
+              </p>
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Conexión con Scouts</h3>
-            <p className="text-gray-600">
-              Tu perfil es visible para academias y scouts buscando nuevo talento.
-            </p>
-          </div>
 
-          {/* Feature 3 */}
-          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all">
-            <div className="w-12 h-12 bg-lime-neon/10 rounded-xl flex items-center justify-center mb-6">
-              <Trophy className="w-6 h-6 text-lime-neon" />
+            {/* Feature 2 */}
+            <div className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-white/10 hover:border-lime-neon/50 transition-all group">
+              <div className="w-14 h-14 bg-lime-neon/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-lime-neon/20 transition-all">
+                <Users className="w-7 h-7 text-lime-neon" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Conexión con Scouts</h3>
+              <p className="text-gray-400">
+                Los scouts pueden descubrir tu perfil y contactarte directamente.
+              </p>
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Perfil Profesional</h3>
-            <p className="text-gray-600">
-              Crea un portafolio digital con tus mejores jugadas, estadísticas y logros.
-            </p>
+
+            {/* Feature 3 */}
+            <div className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-white/10 hover:border-lime-neon/50 transition-all group">
+              <div className="w-14 h-14 bg-lime-neon/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-lime-neon/20 transition-all">
+                <TrendingUp className="w-7 h-7 text-lime-neon" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Seguimiento de Progreso</h3>
+              <p className="text-gray-400">
+                Mide tu evolución con estadísticas detalladas y rankings actualizados.
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* CTA Section */}
-      <div className="bg-gradient-to-br from-lime-neon to-yellow-400 py-20">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold text-black mb-6">
-            ¿Listo para dar el siguiente paso?
+      <div className="relative py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-lime-neon/20 to-green-400/20 blur-3xl"></div>
+        
+        <div className="relative max-w-4xl mx-auto text-center px-4">
+          <h2 className="text-5xl font-bold text-white mb-6">
+            ¿Listo para comenzar?
           </h2>
-          <p className="text-xl text-black/80 mb-8">
-            Únete a cientos de jugadores que ya están conectando con su futuro
+          <p className="text-xl text-gray-300 mb-10">
+            Únete a cientos de jugadores que ya están mejorando su juego
           </p>
-          <button 
+          <button
             onClick={onLoginClick}
-            className="px-10 py-5 bg-black text-lime-neon font-bold text-lg rounded-xl hover:scale-105 transition-all shadow-2xl"
+            className="px-12 py-5 bg-lime-neon text-black font-bold text-lg rounded-xl hover:shadow-2xl hover:shadow-lime-neon/50 transition-all hover:scale-105"
           >
             Crear mi Perfil Gratis
           </button>
