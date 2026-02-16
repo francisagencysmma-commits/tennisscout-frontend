@@ -1,266 +1,160 @@
-import React, { useState } from 'react';
-import { Trophy, Video, BarChart3, Users, Zap, ArrowRight, Play, CheckCircle2, TrendingUp } from 'lucide-react';
+import React from 'react';
+import { ArrowRight, TrendingUp, Video, Users, Trophy } from 'lucide-react';
 
 const Landing = ({ onLoginClick }) => {
   return (
-    <div className="min-h-screen bg-cream-50">
-      {/* Navbar */}
-      <nav className="fixed top-0 w-full header-blur z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-lime-neon rounded-xl flex items-center justify-center">
-              <Trophy className="w-6 h-6 text-dark-deepest" />
-            </div>
-            <span className="text-2xl font-display font-bold text-dark-deepest">TennisScout AI</span>
-          </div>
-          
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-dark-base hover:text-lime-neon transition-colors font-medium">Features</a>
-            <a href="#stats" className="text-dark-base hover:text-lime-neon transition-colors font-medium">Estadísticas</a>
-            <a href="#how" className="text-dark-base hover:text-lime-neon transition-colors font-medium">Cómo Funciona</a>
-          </div>
-
-          <button 
-            onClick={onLoginClick}
-            className="btn-neon px-6 py-2.5 rounded-xl font-bold text-dark-deepest"
-          >
-            Iniciar Sesión
-          </button>
-        </div>
-      </nav>
-
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-          <div className="animate-fadeIn">
-            <div className="inline-flex items-center gap-2 bg-lime-neon/20 px-4 py-2 rounded-full mb-6">
-              <Zap className="w-4 h-4 text-lime-neon" />
-              <span className="text-sm font-bold text-dark-deepest uppercase">Next-Gen Scouting</span>
+      <div className="relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="space-y-8 animate-fadeIn">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-lime-neon/10 border border-lime-neon/20 rounded-full">
+                <Trophy className="w-4 h-4 text-lime-neon" />
+                <span className="text-sm font-semibold text-gray-700">Plataforma #1 de Reclutamiento</span>
+              </div>
+              
+              <h1 className="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
+                Conecta tu <span className="text-lime-neon">Talento</span> con el Mundo
+              </h1>
+              
+              <p className="text-xl text-gray-600 leading-relaxed">
+                TennisScout AI usa inteligencia artificial para analizar tu juego, 
+                crear tu perfil profesional y conectarte con academias y scouts de élite.
+              </p>
+
+              <div className="flex flex-wrap gap-4">
+                <button 
+                  onClick={onLoginClick}
+                  className="px-8 py-4 bg-lime-neon text-black font-bold rounded-xl hover:brightness-110 transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+                >
+                  Comenzar Gratis
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+                
+                <button className="px-8 py-4 bg-white text-gray-900 font-bold rounded-xl border-2 border-gray-200 hover:border-lime-neon transition-all">
+                  Ver Demo
+                </button>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-200">
+                <div>
+                  <div className="text-3xl font-bold text-gray-900">500+</div>
+                  <div className="text-sm text-gray-600">Jugadores</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-gray-900">50+</div>
+                  <div className="text-sm text-gray-600">Academias</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-gray-900">95%</div>
+                  <div className="text-sm text-gray-600">Éxito</div>
+                </div>
+              </div>
             </div>
 
-            <h1 className="text-6xl md:text-7xl font-display font-bold mb-6">
-              <span className="text-dark-deepest">Tu Futuro en el Tenis,</span>
-              <br />
-              <span className="gradient-text-lime">Impulsado por IA</span>
-            </h1>
-
-            <p className="text-xl text-dark-light mb-8 leading-relaxed">
-              Crea tu perfil profesional, sube tus mejores jugadas y conéctate con las mejores academias del mundo. 
-              Deja que nuestra IA analice tu juego y destaque tu potencial.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button 
-                onClick={onLoginClick}
-                className="btn-neon px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2"
-              >
-                Empezar Gratis
-                <ArrowRight className="w-5 h-5" />
-              </button>
-              
-              <button className="px-8 py-4 bg-dark-deepest text-cream-50 rounded-xl font-bold text-lg hover:bg-dark-base transition-all flex items-center justify-center gap-2">
-                <Play className="w-5 h-5" />
-                Ver Demo
-              </button>
-            </div>
-          </div>
-
-          {/* Hero Image - NUEVA IMAGEN */}
-          <div className="relative animate-slideUp">
-            <div className="relative rounded-3xl overflow-hidden shadow-dark">
-              <img 
-  src="https://i.ibb.co/BH15Cx9s/Tenis-Day.jpg"
-  alt="Tennis players"
-  className="w-full h-[500px] object-cover"
-/>
-              <div className="absolute inset-0 bg-gradient-to-t from-dark-deepest/80 to-transparent" />
-              
-              {/* Floating Stats */}
-              <div className="absolute bottom-6 left-6 bg-cream-50 rounded-2xl p-4 shadow-dark animate-float">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-lime-neon rounded-xl flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6 text-dark-deepest" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-dark-deepest">204 km/h</div>
-                    <div className="text-sm text-dark-light">Top Serve Speed</div>
+            {/* Right Image */}
+            <div className="relative lg:h-[600px] animate-fadeIn">
+              <div className="absolute inset-0 bg-lime-neon/10 rounded-3xl blur-3xl"></div>
+              <div className="relative h-full rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+                <img 
+                  src="https://images.unsplash.com/photo-1622163642998-1ea32b0bbc67?w=800&q=80"
+                  alt="Jugador de tenis profesional"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.src = "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80";
+                  }}
+                />
+                {/* Overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                
+                {/* Floating card */}
+                <div className="absolute bottom-8 left-8 right-8 bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-100">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-lime-neon rounded-full flex items-center justify-center">
+                      <TrendingUp className="w-6 h-6 text-black" />
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-600">Análisis en Tiempo Real</div>
+                      <div className="text-xl font-bold text-gray-900">IA Avanzada</div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Stats Bar */}
-      <section id="stats" className="py-12 px-6 bg-dark-deepest">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-          {[
-            { number: '500+', label: 'Jugadores Activos' },
-            { number: '1.2K+', label: 'Videos Analizados' },
-            { number: '85%', label: 'Scout Match Rate' },
-            { number: '50+', label: 'Academias Partner' }
-          ].map((stat, i) => (
-            <div key={i} className="text-center">
-              <div className="text-5xl font-bold gradient-text-lime mb-2">{stat.number}</div>
-              <div className="text-cream-100 text-sm">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+      </div>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-display font-bold mb-4 text-dark-deepest">
-              Características Principales
-            </h2>
-            <div className="w-24 h-1 bg-lime-neon mx-auto mb-6"></div>
-            <p className="text-xl text-dark-light max-w-2xl mx-auto">
-              Todo lo que necesitas para destacar y ser descubierto
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            Todo lo que necesitas para destacar
+          </h2>
+          <p className="text-xl text-gray-600">
+            Herramientas profesionales al alcance de tu mano
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {/* Feature 1 */}
+          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all">
+            <div className="w-12 h-12 bg-lime-neon/10 rounded-xl flex items-center justify-center mb-6">
+              <Video className="w-6 h-6 text-lime-neon" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-3">Análisis de Video IA</h3>
+            <p className="text-gray-600">
+              Sube tus videos y recibe análisis detallado de técnica, velocidad y estrategia.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: Video,
-                title: 'Análisis IA Avanzado',
-                description: 'Nuestra IA analiza tus golpes, movimiento y estrategia en tiempo real',
-                color: 'bg-lime-neon'
-              },
-              {
-                icon: BarChart3,
-                title: 'Estadísticas Profesionales',
-                description: 'Trackea tu progreso con métricas detalladas y gráficos interactivos',
-                color: 'bg-dark-deepest'
-              },
-              {
-                icon: Users,
-                title: 'Conexión Directa',
-                description: 'Envía tu perfil a academias y scouts con un solo click',
-                color: 'bg-forest-dark'
-              }
-            ].map((feature, i) => {
-              const Icon = feature.icon;
-              return (
-                <div 
-                  key={i}
-                  className="group p-8 bg-cream-50 rounded-2xl border-2 border-dark-deepest hover:border-lime-neon transition-all hover:-translate-y-2 shadow-dark"
-                >
-                  <div className={`w-16 h-16 ${feature.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                    <Icon className={`w-8 h-8 ${feature.color === 'bg-lime-neon' ? 'text-dark-deepest' : 'text-lime-neon'}`} />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-3 text-dark-deepest">{feature.title}</h3>
-                  <p className="text-dark-light leading-relaxed">{feature.description}</p>
-                </div>
-              );
-            })}
+          {/* Feature 2 */}
+          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all">
+            <div className="w-12 h-12 bg-lime-neon/10 rounded-xl flex items-center justify-center mb-6">
+              <Users className="w-6 h-6 text-lime-neon" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-3">Conexión con Scouts</h3>
+            <p className="text-gray-600">
+              Tu perfil es visible para academias y scouts buscando nuevo talento.
+            </p>
+          </div>
+
+          {/* Feature 3 */}
+          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all">
+            <div className="w-12 h-12 bg-lime-neon/10 rounded-xl flex items-center justify-center mb-6">
+              <Trophy className="w-6 h-6 text-lime-neon" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-3">Perfil Profesional</h3>
+            <p className="text-gray-600">
+              Crea un portafolio digital con tus mejores jugadas, estadísticas y logros.
+            </p>
           </div>
         </div>
-      </section>
-
-      {/* Data Section - Dark */}
-      <section className="py-20 px-6 section-dark">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-5xl font-display font-bold text-center mb-12">
-            Tu Rendimiento en <span className="gradient-text-lime">Datos Reales</span>
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="text-6xl font-bold gradient-text-lime mb-2">204 km/h</div>
-              <div className="text-cream-200 mb-2">Velocidad de Saque</div>
-              <div className="w-full bg-dark-light rounded-full h-2">
-                <div className="bg-lime-neon h-2 rounded-full" style={{width: '85%'}}></div>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <div className="text-6xl font-bold gradient-text-lime mb-2">92%</div>
-              <div className="text-cream-200 mb-2">Precisión de Derecha</div>
-              <div className="w-full bg-dark-light rounded-full h-2">
-                <div className="bg-lime-neon h-2 rounded-full" style={{width: '92%'}}></div>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <div className="text-6xl font-bold gradient-text-lime mb-2">8.5 / 10</div>
-              <div className="text-cream-200 mb-2">Rendimiento Físico</div>
-              <div className="w-full bg-dark-light rounded-full h-2">
-                <div className="bg-lime-neon h-2 rounded-full" style={{width: '85%'}}></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How it Works */}
-      <section id="how" className="py-20 px-6 bg-cream-50">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-5xl font-display font-bold text-center mb-16 text-dark-deepest">
-            Cómo <span className="gradient-text-lime">Funciona</span>
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-12">
-            {[
-              { step: '01', title: 'Crea tu Perfil', description: 'Regístrate y completa tu información en menos de 2 minutos' },
-              { step: '02', title: 'Sube tus Videos', description: 'Comparte tus mejores jugadas. Nuestra IA los analiza automáticamente' },
-              { step: '03', title: 'Conecta con Scouts', description: 'Los scouts te descubren y contactan directamente' }
-            ].map((item, i) => (
-              <div key={i} className="relative text-center">
-                <div className="text-8xl font-bold text-lime-neon/20 mb-4">{item.step}</div>
-                <div className="relative -mt-16">
-                  <div className="w-16 h-16 bg-lime-neon rounded-full flex items-center justify-center mx-auto mb-6 glow-lime">
-                    <CheckCircle2 className="w-8 h-8 text-dark-deepest" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-3 text-dark-deepest">{item.title}</h3>
-                  <p className="text-dark-light">{item.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      </div>
 
       {/* CTA Section */}
-      <section className="py-32 px-6 bg-dark-deepest text-center">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-6xl font-display font-bold mb-6">
-            <span className="text-cream-50">Listo para ser</span>
-            <br />
-            <span className="gradient-text-lime">descubierto?</span>
+      <div className="bg-gradient-to-br from-lime-neon to-yellow-400 py-20">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-4xl font-bold text-black mb-6">
+            ¿Listo para dar el siguiente paso?
           </h2>
-          <p className="text-xl text-cream-200 mb-12">
-            Únete a cientos de jugadores que ya están usando TennisScout AI
+          <p className="text-xl text-black/80 mb-8">
+            Únete a cientos de jugadores que ya están conectando con su futuro
           </p>
           <button 
             onClick={onLoginClick}
-            className="btn-neon px-12 py-5 rounded-xl font-bold text-xl inline-flex items-center gap-3 animate-pulse-neon"
+            className="px-10 py-5 bg-black text-lime-neon font-bold text-lg rounded-xl hover:scale-105 transition-all shadow-2xl"
           >
-            Crear Cuenta Gratis
-            <ArrowRight className="w-6 h-6" />
+            Crear mi Perfil Gratis
           </button>
         </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-dark-deepest border-t border-lime-neon/20 py-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-lime-neon rounded-xl flex items-center justify-center">
-                <Trophy className="w-6 h-6 text-dark-deepest" />
-              </div>
-              <span className="text-xl font-display font-bold text-cream-50">TennisScout AI</span>
-            </div>
-            <div className="text-cream-300 text-sm">
-              © 2026 TennisScout AI. Todos los derechos reservados.
-            </div>
-          </div>
-        </div>
-      </footer>
+      </div>
     </div>
   );
 };
