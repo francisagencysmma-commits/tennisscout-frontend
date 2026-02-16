@@ -1,15 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import PublicProfile from './components/PublicProfile';
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Auth from './components/Auth';
 import Landing from './components/Landing';
+import Footer from './components/Footer';
 import ProfileView from './components/ProfileView';
 import UploadVideo from './components/UploadVideo';
 import PlayersList from './components/PlayersList';
+import PublicProfile from './components/PublicProfile';
 import { Video, Upload, X, Calendar, Eye } from 'lucide-react';
-import Footer from './components/Footer';
 
 function App() {
   const [activeSection, setActiveSection] = useState('profile');
@@ -80,14 +80,6 @@ function App() {
     }
   }, [isAuthenticated]);
 
-  if (showLanding && !isAuthenticated) {
-    return <Landing onLoginClick={() => setShowLanding(false)} />;
-  }
-
-  if (!isAuthenticated) {
-    return <Auth onAuthSuccess={handleAuthSuccess} />;
-  }
-
   const handleOpenUploadModal = () => {
     console.log('Abriendo modal de upload');
     setShowUploadModal(true);
@@ -102,15 +94,12 @@ function App() {
     console.log('=== VIDEO SUBIDO CON ÉXITO ===');
     console.log('Nuevo video:', newVideo);
     
-    // Cerrar modal
     setShowUploadModal(false);
     
-    // Esperar 1 segundo y recargar
     setTimeout(async () => {
       console.log('Recargando lista de videos...');
       await loadVideos();
       
-      // Si estamos en profile, cambiar a videos
       if (activeSection === 'profile') {
         setActiveSection('videos');
         setVideoTab('mis-videos');
@@ -182,7 +171,7 @@ function App() {
             {videosToShow.length > 0 ? (
               videosToShow.map((video) => (
                 <div key={video._id} className="bg-white rounded-2xl overflow-hidden hover:scale-105 transition-transform border-2 border-gray-200 shadow-lg">
-                  <div className="relative aspect-video bg-gray-200">
+                  <div className="relative aspect-video bg-black">
                     {video.url ? (
                       <video src={video.url} className="w-full h-full object-cover" controls />
                     ) : (
@@ -213,7 +202,7 @@ function App() {
             ) : (
               <div className="col-span-full text-center py-16 bg-white rounded-2xl border-2 border-gray-200">
                 <Video className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-                <p className="mb-4 text-gray-600 font-medium">
+                <p className="mb-4 text-gray-600">
                   {videoTab === 'mis-videos' ? 'No has subido videos aún' : 'No hay videos disponibles'}
                 </p>
                 {videoTab === 'mis-videos' && (
@@ -246,46 +235,64 @@ function App() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar 
-  activeSection={activeSection} 
-  setActiveSection={setActiveSection}
-/>
-      
-      <main className="flex-1 flex flex-col">
-        <Header playerData={currentUser} onLogout={handleLogout} />
+    <Router>
+      <Routes>
+        {/* Ruta pública del perfil */}
+        <Route path="/player/:id" element={<PublicProfile />} />
         
-        <div className="flex-1 overflow-auto">
-          <div className="max-w-7xl mx-auto px-8 py-8">
-            {renderSection()}
-          </div>
-          
-          <Footer />
-        </div>
-      </main>
+        {/* Rutas privadas (app principal) */}
+        <Route path="/*" element={
+          <>
+            {showLanding && !isAuthenticated ? (
+              <Landing onLoginClick={() => setShowLanding(false)} />
+            ) : !isAuthenticated ? (
+              <Auth onAuthSuccess={handleAuthSuccess} />
+            ) : (
+              <div className="flex min-h-screen bg-gray-50">
+                <Sidebar 
+                  activeSection={activeSection} 
+                  setActiveSection={setActiveSection}
+                />
+                
+                <main className="flex-1 flex flex-col">
+                  <Header playerData={currentUser} onLogout={handleLogout} />
+                  
+                  <div className="flex-1 overflow-auto">
+                    <div className="max-w-7xl mx-auto px-8 py-8">
+                      {renderSection()}
+                    </div>
+                    
+                    <Footer />
+                  </div>
+                </main>
 
-      {showUploadModal && (
-        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-lime-neon shadow-2xl">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-black">Subir Video</h2>
-                <button 
-                  onClick={handleCloseUploadModal}
-                  className="text-gray-400 hover:text-black transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
+                {showUploadModal && (
+                  <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-lime-neon shadow-2xl">
+                      <div className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <h2 className="text-2xl font-bold text-black">Subir Video</h2>
+                          <button 
+                            onClick={handleCloseUploadModal}
+                            className="text-gray-400 hover:text-black transition-colors"
+                          >
+                            <X className="w-6 h-6" />
+                          </button>
+                        </div>
+                        <UploadVideo 
+                          playerId={currentUser?._id} 
+                          onUploadSuccess={handleVideoUploadSuccess}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-              <UploadVideo 
-                playerId={currentUser?._id} 
-                onUploadSuccess={handleVideoUploadSuccess}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+            )}
+          </>
+        } />
+      </Routes>
+    </Router>
   );
 }
 
