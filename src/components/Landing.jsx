@@ -91,7 +91,7 @@ const Landing = ({ onLoginClick }) => {
                   <img 
                     alt="Jugador profesional de tenis" 
                     className="w-full h-96 object-cover" 
-                    src="https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80"
+                    src="https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?w=800&q=80"
                     onError={(e) => {
                       e.target.src = "https://images.unsplash.com/photo-1622163642998-1ea32b0bbc67?w=800&q=80";
                     }}
