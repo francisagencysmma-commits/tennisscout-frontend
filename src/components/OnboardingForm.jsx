@@ -1,421 +1,388 @@
 import React, { useState } from 'react';
-import { ArrowRight, ArrowLeft, Upload, X } from 'lucide-react';
+import { X, ArrowRight, ArrowLeft, Check } from 'lucide-react';
 
-const OnboardingForm = ({ initialData, onComplete, onSkip }) => {
-  const [step, setStep] = useState(1);
+const OnboardingForm_Padel = ({ initialData, onComplete, onSkip }) => {
+  const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
-    fotoPerfil: '',
-    
-    // Basic Info
     fullName: initialData?.nombre || '',
     dateOfBirth: '',
     country: initialData?.pais || '',
     
-    // Physical
-    handedness: '', // Left or Right
-    height: '', // cm
-    weight: '', // kg
-    
-    // Experience
+    // Información técnica específica de pádel
+    playingSide: '', // Derecha o Izquierda
+    position: '', // Drive (derecha) o Revés (izquierda)
+    playingLevel: '', // Principiante, Intermedio, Avanzado, Profesional
     yearsPlaying: '',
-    ageStartedPlaying: '',
     
-    // Competition
-    officialTournamentsPlayed: '',
-    nationalRanking: '',
+    // Golpes y técnicas
+    strongestShot: '', // Bandeja, Víbora, Remate, Volea, etc.
+    bestSkill: '', // Red, Fondo, Potencia, Control, etc.
+    weakestShot: '',
+    serveType: '', // Plana, Cortada, Liftada
     
-    // Training
-    currentCoachOrAcademy: '',
-    weeklyTrainingHours: '',
+    // Estilo de juego
+    playingStyle: '', // Agresivo, Defensivo, Equilibrado, Táctico
+    preferredSurface: '', // Césped artificial, Cemento, Cristal
     
-    // Playing Style
-    strongestStroke: '',
-    playingStyle: '',
-    firstServeConsistency: '', // percentage
+    // Físico
+    height: '',
+    weight: '',
+    dominantHand: '', // Diestro, Zurdo
     
-    // Health
-    injuryHistory: '',
+    // Experiencia competitiva
+    hasCompetitiveExperience: false,
+    tournamentLevel: '', // Local, Regional, Nacional, Internacional
+    ranking: '',
+    currentClub: '',
+    currentCoach: '',
+    
+    // Entrenamiento
+    weeklyHours: '',
+    trainingFocus: '', // Técnica, Físico, Táctico, Mental
+    
+    // Objetivos
+    goals: '', // Mejorar ranking, Profesionalizarse, Diversión, etc.
+    availability: '' // Tiempo disponible para entrenar más
   });
 
-  const [uploading, setUploading] = useState(false);
+  const questions = [
+    {
+      id: 'basic',
+      title: '👋 Información Básica',
+      description: 'Empecemos con lo esencial',
+      fields: [
+        { name: 'fullName', label: 'Nombre Completo', type: 'text', required: true, placeholder: 'Alejandro Galán' },
+        { name: 'dateOfBirth', label: 'Fecha de Nacimiento', type: 'date', required: true },
+        { name: 'country', label: 'País', type: 'text', required: true, placeholder: 'España' }
+      ]
+    },
+    {
+      id: 'position',
+      title: '🎾 Tu Posición en Pista',
+      description: '¿Dónde juegas normalmente?',
+      fields: [
+        { 
+          name: 'position', 
+          label: '¿En qué posición juegas?', 
+          type: 'select', 
+          required: true,
+          options: ['Drive (Derecha)', 'Revés (Izquierda)', 'Ambas posiciones']
+        },
+        { 
+          name: 'playingSide', 
+          label: '¿Qué lado prefieres?', 
+          type: 'select', 
+          required: true,
+          options: ['Derecha', 'Izquierda', 'Sin preferencia']
+        },
+        { 
+          name: 'dominantHand', 
+          label: 'Mano dominante', 
+          type: 'select', 
+          required: true,
+          options: ['Diestro', 'Zurdo']
+        }
+      ]
+    },
+    {
+      id: 'level',
+      title: '📊 Tu Nivel',
+      description: 'Cuéntanos sobre tu experiencia',
+      fields: [
+        { 
+          name: 'playingLevel', 
+          label: '¿Cuál es tu nivel actual?', 
+          type: 'select', 
+          required: true,
+          options: ['Principiante (< 1 año)', 'Intermedio (1-3 años)', 'Avanzado (3-5 años)', 'Competición (5+ años)', 'Profesional']
+        },
+        { name: 'yearsPlaying', label: '¿Cuántos años llevas jugando?', type: 'number', required: true, placeholder: '5' },
+        { name: 'ranking', label: 'Ranking (si tienes)', type: 'text', required: false, placeholder: '#150 Nacional' }
+      ]
+    },
+    {
+      id: 'shots',
+      title: '💪 Tus Golpes',
+      description: 'Identifica tus fortalezas y áreas de mejora',
+      fields: [
+        { 
+          name: 'strongestShot', 
+          label: '¿Cuál es tu golpe más potente?', 
+          type: 'select', 
+          required: true,
+          options: ['Bandeja', 'Víbora', 'Remate', 'Volea', 'Dejada', 'Globo', 'Contraataque']
+        },
+        { 
+          name: 'weakestShot', 
+          label: '¿Qué golpe necesitas mejorar?', 
+          type: 'select', 
+          required: true,
+          options: ['Bandeja', 'Víbora', 'Remate', 'Volea', 'Dejada', 'Globo', 'Contraataque']
+        },
+        { 
+          name: 'bestSkill', 
+          label: '¿Dónde destacas más?', 
+          type: 'select', 
+          required: true,
+          options: ['Juego de Red', 'Juego de Fondo', 'Potencia', 'Control', 'Velocidad', 'Táctica', 'Resistencia']
+        }
+      ]
+    },
+    {
+      id: 'style',
+      title: '🎯 Tu Estilo de Juego',
+      description: '¿Cómo juegas?',
+      fields: [
+        { 
+          name: 'playingStyle', 
+          label: 'Define tu estilo', 
+          type: 'select', 
+          required: true,
+          options: ['Agresivo (ataque constante)', 'Defensivo (contraataque)', 'Equilibrado (versátil)', 'Táctico (cerebral)', 'Potencia pura']
+        },
+        { 
+          name: 'serveType', 
+          label: 'Tipo de saque preferido', 
+          type: 'select', 
+          required: true,
+          options: ['Plano (potencia)', 'Cortado (control)', 'Liftado (efecto)', 'Bandeja saque', 'Varía según rival']
+        },
+        { 
+          name: 'preferredSurface', 
+          label: 'Superficie favorita', 
+          type: 'select', 
+          required: false,
+          options: ['Césped artificial', 'Cemento/Hormigón', 'Cristal', 'Moqueta', 'No tengo preferencia']
+        }
+      ]
+    },
+    {
+      id: 'physical',
+      title: '🏋️ Información Física',
+      description: 'Datos para análisis biomecánico',
+      fields: [
+        { name: 'height', label: 'Altura (cm)', type: 'number', required: false, placeholder: '180' },
+        { name: 'weight', label: 'Peso (kg)', type: 'number', required: false, placeholder: '75' }
+      ]
+    },
+    {
+      id: 'experience',
+      title: '🏆 Experiencia Competitiva',
+      description: 'Tu trayectoria en torneos',
+      fields: [
+        { 
+          name: 'hasCompetitiveExperience', 
+          label: '¿Has jugado torneos?', 
+          type: 'checkbox', 
+          required: false 
+        },
+        { 
+          name: 'tournamentLevel', 
+          label: '¿A qué nivel?', 
+          type: 'select', 
+          required: false,
+          options: ['Local (club)', 'Regional (provincia)', 'Nacional', 'Internacional', 'Circuito profesional (WPT/APT)']
+        },
+        { name: 'currentClub', label: 'Club actual', type: 'text', required: false, placeholder: 'Real Club de Pádel' },
+        { name: 'currentCoach', label: 'Entrenador actual', type: 'text', required: false, placeholder: 'Juan Martín Díaz' }
+      ]
+    },
+    {
+      id: 'training',
+      title: '📅 Entrenamiento',
+      description: 'Tu rutina actual',
+      fields: [
+        { name: 'weeklyHours', label: 'Horas semanales de entreno', type: 'number', required: true, placeholder: '10' },
+        { 
+          name: 'trainingFocus', 
+          label: '¿En qué te enfocas más?', 
+          type: 'select', 
+          required: true,
+          options: ['Técnica', 'Físico/Preparación', 'Táctico/Estrategia', 'Mental/Psicológico', 'Todo equilibrado']
+        }
+      ]
+    },
+    {
+      id: 'goals',
+      title: '🎯 Tus Objetivos',
+      description: '¿Qué buscas conseguir?',
+      fields: [
+        { 
+          name: 'goals', 
+          label: 'Objetivo principal', 
+          type: 'select', 
+          required: true,
+          options: [
+            'Mejorar mi ranking', 
+            'Profesionalizarme', 
+            'Llegar al circuito WPT',
+            'Ganar torneos locales',
+            'Mejorar técnica',
+            'Jugar por diversión y mejorar',
+            'Ser descubierto por scouts'
+          ]
+        },
+        { 
+          name: 'availability', 
+          label: 'Disponibilidad para entrenar más', 
+          type: 'select', 
+          required: true,
+          options: ['Tiempo completo (profesional)', 'Parcial (20h+ semana)', 'Fines de semana', 'Flexible', 'Limitada (trabajo/estudios)']
+        }
+      ]
+    }
+  ];
+
+  const currentQuestion = questions[currentStep];
+  const totalSteps = questions.length;
+  const progress = ((currentStep + 1) / totalSteps) * 100;
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
 
-  const handlePhotoUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setUploading(true);
-    const formDataUpload = new FormData();
-    formDataUpload.append('file', file);
-    formDataUpload.append('upload_preset', 'tennisscout');
-
-    try {
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/dfiw0rscm/image/upload`,
-        { method: 'POST', body: formDataUpload }
-      );
-      const data = await res.json();
-      setFormData({ ...formData, fotoPerfil: data.secure_url });
-    } catch (error) {
-      console.error('Error subiendo foto:', error);
+  const handleNext = () => {
+    // Validar campos requeridos
+    const requiredFields = currentQuestion.fields.filter(f => f.required);
+    const allFilled = requiredFields.every(field => formData[field.name]);
+    
+    if (!allFilled) {
+      alert('Por favor completa todos los campos obligatorios');
+      return;
     }
-    setUploading(false);
+
+    if (currentStep < totalSteps - 1) {
+      setCurrentStep(prev => prev + 1);
+    } else {
+      handleComplete();
+    }
   };
 
-  const nextStep = () => setStep(step + 1);
-  const prevStep = () => setStep(step - 1);
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep(prev => prev - 1);
+    }
+  };
 
-  const handleSubmit = () => {
+  const handleComplete = () => {
     onComplete(formData);
   };
 
-  const totalSteps = 5;
-
   return (
-    <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-        <div className="p-8">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-3xl font-bold" style={{color: '#000'}}>Completa tu Perfil</h2>
-              <p style={{color: '#666'}}>Paso {step} de {totalSteps}</p>
-            </div>
-            <button onClick={onSkip} style={{color: '#999'}}>
-              <X className="w-6 h-6" />
-            </button>
-          </div>
+    <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl relative animate-fadeIn">
+        {/* Progress Bar */}
+        <div className="h-2 bg-gray-200 rounded-t-2xl overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-green-500 to-lime-neon transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
 
-          {/* Progress Bar */}
-          <div className="w-full bg-gray-200 rounded-full h-2 mb-8">
-            <div 
-              className="h-2 rounded-full transition-all duration-300"
-              style={{ 
-                width: `${(step / totalSteps) * 100}%`,
-                backgroundColor: '#cdff00'
-              }}
-            ></div>
+        {/* Header */}
+        <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-black text-gray-900">{currentQuestion.title}</h2>
+            <p className="text-sm text-gray-600 mt-1">{currentQuestion.description}</p>
           </div>
+          <button 
+            onClick={onSkip}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
 
-          {/* STEP 1: Photo & Basic Info */}
-          {step === 1 && (
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold mb-4" style={{color: '#000'}}>📸 Foto y Datos Básicos</h3>
+        {/* Content */}
+        <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto">
+          {currentQuestion.fields.map(field => (
+            <div key={field.name}>
+              <label className="block text-sm font-bold text-gray-900 mb-2">
+                {field.label} {field.required && <span className="text-red-500">*</span>}
+              </label>
               
-              <div className="flex flex-col items-center">
-                <div className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center mb-4 overflow-hidden" style={{border: '4px solid #cdff00'}}>
-                  {formData.fotoPerfil ? (
-                    <img src={formData.fotoPerfil} alt="Profile" className="w-full h-full object-cover" />
-                  ) : (
-                    <Upload className="w-12 h-12" style={{color: '#999'}} />
-                  )}
-                </div>
-                <label className="px-6 py-3 rounded-xl font-bold cursor-pointer" style={{backgroundColor: '#cdff00', color: '#000'}}>
-                  {uploading ? 'Subiendo...' : 'Subir Foto'}
-                  <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" disabled={uploading} />
+              {field.type === 'select' ? (
+                <select
+                  name={field.name}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  required={field.required}
+                  className="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-lime-neon focus:ring-2 focus:ring-lime-neon/20 transition-all"
+                >
+                  <option value="">Selecciona una opción</option>
+                  {field.options.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              ) : field.type === 'checkbox' ? (
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name={field.name}
+                    checked={formData[field.name]}
+                    onChange={handleChange}
+                    className="w-5 h-5 text-lime-neon focus:ring-lime-neon border-gray-300 rounded"
+                  />
+                  <span className="text-sm text-gray-700">Sí, tengo experiencia en torneos</span>
                 </label>
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>Full Name</label>
+              ) : (
                 <input
-                  type="text"
-                  name="fullName"
-                  value={formData.fullName}
+                  type={field.type}
+                  name={field.name}
+                  value={formData[field.name]}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 rounded-xl"
-                  style={{borderColor: '#e5e5e5', color: '#000'}}
-                  placeholder="Rafael Nadal Parera"
+                  required={field.required}
+                  placeholder={field.placeholder}
+                  className="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-lime-neon focus:ring-2 focus:ring-lime-neon/20 transition-all"
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>Date of Birth</label>
-                <input
-                  type="date"
-                  name="dateOfBirth"
-                  value={formData.dateOfBirth}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 rounded-xl"
-                  style={{borderColor: '#e5e5e5', color: '#000'}}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>Country</label>
-                <input
-                  type="text"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 rounded-xl"
-                  style={{borderColor: '#e5e5e5', color: '#000'}}
-                  placeholder="España"
-                />
-              </div>
+              )}
             </div>
-          )}
+          ))}
+        </div>
 
-          {/* STEP 2: Physical Info */}
-          {step === 2 && (
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold mb-4" style={{color: '#000'}}>💪 Físico y Equipo</h3>
-              
-              <div>
-                <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>Left or Right Hand</label>
-                <select
-                  name="handedness"
-                  value={formData.handedness}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 rounded-xl"
-                  style={{borderColor: '#e5e5e5', color: '#000'}}
-                >
-                  <option value="">Selecciona...</option>
-                  <option value="Diestro">Diestro (Right)</option>
-                  <option value="Zurdo">Zurdo (Left)</option>
-                </select>
-              </div>
+        {/* Footer */}
+        <div className="p-6 border-t border-gray-200 flex items-center justify-between">
+          <button
+            onClick={handleBack}
+            disabled={currentStep === 0}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-all ${
+              currentStep === 0 
+                ? 'text-gray-400 cursor-not-allowed' 
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Atrás
+          </button>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>Height (cm)</label>
-                  <input
-                    type="number"
-                    name="height"
-                    value={formData.height}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 rounded-xl"
-                    style={{borderColor: '#e5e5e5', color: '#000'}}
-                    placeholder="188"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>Weight (kg)</label>
-                  <input
-                    type="number"
-                    name="weight"
-                    value={formData.weight}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 rounded-xl"
-                    style={{borderColor: '#e5e5e5', color: '#000'}}
-                    placeholder="82"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>Years Playing</label>
-                  <input
-                    type="number"
-                    name="yearsPlaying"
-                    value={formData.yearsPlaying}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 rounded-xl"
-                    style={{borderColor: '#e5e5e5', color: '#000'}}
-                    placeholder="18"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>Age Started Playing</label>
-                  <input
-                    type="number"
-                    name="ageStartedPlaying"
-                    value={formData.ageStartedPlaying}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 rounded-xl"
-                    style={{borderColor: '#e5e5e5', color: '#000'}}
-                    placeholder="6"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 3: Competition */}
-          {step === 3 && (
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold mb-4" style={{color: '#000'}}>🏆 Competición</h3>
-              
-              <div>
-                <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>Official Tournaments Played</label>
-                <input
-                  type="number"
-                  name="officialTournamentsPlayed"
-                  value={formData.officialTournamentsPlayed}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 rounded-xl"
-                  style={{borderColor: '#e5e5e5', color: '#000'}}
-                  placeholder="25"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>National Ranking</label>
-                <input
-                  type="text"
-                  name="nationalRanking"
-                  value={formData.nationalRanking}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 rounded-xl"
-                  style={{borderColor: '#e5e5e5', color: '#000'}}
-                  placeholder="#12"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* STEP 4: Training & Coaching */}
-          {step === 4 && (
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold mb-4" style={{color: '#000'}}>🎾 Entrenamiento</h3>
-              
-              <div>
-                <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>Current Coach or Academy</label>
-                <input
-                  type="text"
-                  name="currentCoachOrAcademy"
-                  value={formData.currentCoachOrAcademy}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 rounded-xl"
-                  style={{borderColor: '#e5e5e5', color: '#000'}}
-                  placeholder="Carlos Ferrero"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>Weekly Training Hours</label>
-                <input
-                  type="number"
-                  name="weeklyTrainingHours"
-                  value={formData.weeklyTrainingHours}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 rounded-xl"
-                  style={{borderColor: '#e5e5e5', color: '#000'}}
-                  placeholder="20"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* STEP 5: Playing Style & Health */}
-          {step === 5 && (
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold mb-4" style={{color: '#000'}}>⚡ Estilo y Salud</h3>
-              
-              <div>
-                <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>Strongest Stroke</label>
-                <select
-                  name="strongestStroke"
-                  value={formData.strongestStroke}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 rounded-xl"
-                  style={{borderColor: '#e5e5e5', color: '#000'}}
-                >
-                  <option value="">Selecciona...</option>
-                  <option value="Forehand">Forehand</option>
-                  <option value="Backhand">Backhand</option>
-                  <option value="Serve">Serve</option>
-                  <option value="Volley">Volley</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>Playing Style</label>
-                <select
-                  name="playingStyle"
-                  value={formData.playingStyle}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 rounded-xl"
-                  style={{borderColor: '#e5e5e5', color: '#000'}}
-                >
-                  <option value="">Selecciona...</option>
-                  <option value="Aggressive Baseliner">Aggressive Baseliner</option>
-                  <option value="Defensive Baseliner">Defensive Baseliner</option>
-                  <option value="All-Court">All-Court</option>
-                  <option value="Serve & Volley">Serve & Volley</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>First Serve Consistency (%)</label>
-                <input
-                  type="number"
-                  name="firstServeConsistency"
-                  value={formData.firstServeConsistency}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 rounded-xl"
-                  style={{borderColor: '#e5e5e5', color: '#000'}}
-                  placeholder="65"
-                  min="0"
-                  max="100"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold mb-2" style={{color: '#000'}}>Injury History</label>
-                <textarea
-                  name="injuryHistory"
-                  value={formData.injuryHistory}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 rounded-xl"
-                  style={{borderColor: '#e5e5e5', color: '#000'}}
-                  rows="3"
-                  placeholder="Ej: Esguince de tobillo (Dic 2023), totalmente recuperado"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Navigation Buttons */}
-          <div className="flex items-center justify-between mt-8 pt-6" style={{borderTop: '1px solid #e5e5e5'}}>
-            {step > 1 ? (
-              <button
-                onClick={prevStep}
-                className="flex items-center gap-2 px-6 py-3 border-2 rounded-xl font-bold"
-                style={{borderColor: '#000', color: '#000'}}
-              >
-                <ArrowLeft className="w-5 h-5" />
-                Atrás
-              </button>
-            ) : (
-              <button
-                onClick={onSkip}
-                className="px-6 py-3 font-bold"
-                style={{color: '#999'}}
-              >
-                Saltar
-              </button>
-            )}
-
-            {step < totalSteps ? (
-              <button
-                onClick={nextStep}
-                className="px-8 py-3 rounded-xl font-bold flex items-center gap-2"
-                style={{backgroundColor: '#cdff00', color: '#000'}}
-              >
-                Siguiente
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            ) : (
-              <button
-                onClick={handleSubmit}
-                className="px-8 py-3 rounded-xl font-bold flex items-center gap-2"
-                style={{backgroundColor: '#cdff00', color: '#000'}}
-              >
-                Completar Perfil
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            )}
+          <div className="text-sm text-gray-600 font-medium">
+            Paso {currentStep + 1} de {totalSteps}
           </div>
+
+          <button
+            onClick={handleNext}
+            className="flex items-center gap-2 px-6 py-3 bg-lime-neon text-black font-bold rounded-xl hover:brightness-110 transition-all shadow-lg"
+          >
+            {currentStep === totalSteps - 1 ? (
+              <>
+                <Check className="w-4 h-4" />
+                Finalizar
+              </>
+            ) : (
+              <>
+                Siguiente
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default OnboardingForm;
+export default OnboardingForm_Padel;

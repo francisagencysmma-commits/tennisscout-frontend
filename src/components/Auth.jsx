@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { login, register } from '../services/api';
-import { User, Mail, Lock, Trophy, Eye, EyeOff, MapPin } from 'lucide-react';
+import { User, Mail, Lock, Trophy, Eye, EyeOff } from 'lucide-react';
 import OnboardingForm from './OnboardingForm';
 
 const Auth = ({ onAuthSuccess }) => {
@@ -16,8 +16,7 @@ const Auth = ({ onAuthSuccess }) => {
     email: '',
     password: '',
     pais: '',
-    edad: '',
-    utrRating: ''
+    edad: ''
   });
 
   const handleChange = (e) => {
@@ -48,8 +47,7 @@ const Auth = ({ onAuthSuccess }) => {
           email: formData.email,
           password: formData.password,
           pais: formData.pais,
-          edad: parseInt(formData.edad),
-          utrRating: parseFloat(formData.utrRating) || 0
+          edad: parseInt(formData.edad)
         });
 
         if (response.token) {
@@ -129,7 +127,7 @@ const Auth = ({ onAuthSuccess }) => {
       {/* Left Section: Hero (Hidden on mobile) */}
       <div className="relative hidden lg:flex w-full items-center justify-center lg:w-3/5">
         <div className="absolute inset-0 bg-cover bg-center" style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1622163642998-1ea32b0bbc67?w=1200&q=80')"
+          backgroundImage: "url('https://images.unsplash.com/photo-1612534847738-b3af9bc42abe?w=1200&q=80')"
         }}>
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-green-900/40"></div>
         </div>
@@ -139,15 +137,15 @@ const Auth = ({ onAuthSuccess }) => {
             <div className="bg-lime-neon p-2 rounded-lg shadow-lg shadow-lime-neon/50">
               <Trophy className="w-8 h-8 text-black" />
             </div>
-            <h1 className="text-3xl font-black tracking-tight text-white">TennisScout AI</h1>
+            <h1 className="text-3xl font-black tracking-tight text-white">PadelScout AI</h1>
           </div>
 
           <div className="max-w-xl">
             <h2 className="text-5xl xl:text-6xl font-black leading-tight mb-6 text-white">
-              Domina la Cancha con <span className="text-lime-neon">IA Avanzada</span>
+              Domina la Pista con <span className="text-lime-neon">IA Avanzada</span>
             </h2>
             <p className="text-lg text-gray-200 mb-12">
-              Únete a la red élite de scouts, coaches y jugadores profesionales.
+              Únete a la red élite de scouts, entrenadores y jugadores profesionales de pádel.
             </p>
 
             <div className="space-y-6">
@@ -157,7 +155,7 @@ const Auth = ({ onAuthSuccess }) => {
                 </div>
                 <div>
                   <h3 className="font-bold text-white">Análisis de Golpes IA</h3>
-                  <p className="text-sm text-gray-300">Feedback biomecánico en tiempo real.</p>
+                  <p className="text-sm text-gray-300">Feedback técnico en tiempo real de tu bandeja, volea y remate.</p>
                 </div>
               </div>
             </div>
@@ -166,16 +164,16 @@ const Auth = ({ onAuthSuccess }) => {
 
         <div className="absolute bottom-8 left-12 flex items-center gap-2 text-xs font-medium text-gray-300 uppercase tracking-widest">
           <span className="h-[1px] w-8 bg-lime-neon"></span>
-          El Futuro del Tenis
+          El Futuro del Pádel
         </div>
       </div>
 
-      {/* Right Section: Form (Full width on mobile) */}
+      {/* Right Section: Form */}
       <div className="flex w-full flex-col items-center justify-center p-4 sm:p-6 lg:w-2/5 lg:p-12 bg-white min-h-screen">
         {/* Mobile Logo */}
         <div className="flex items-center gap-2 mb-6 sm:mb-8 lg:hidden">
           <Trophy className="w-6 h-6 sm:w-8 sm:h-8 text-lime-neon" />
-          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-gray-900">TennisScout AI</h1>
+          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-gray-900">PadelScout AI</h1>
         </div>
 
         <div className="w-full max-w-md rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-green-50 to-lime-50 border-2 border-green-200 shadow-xl">
@@ -184,7 +182,7 @@ const Auth = ({ onAuthSuccess }) => {
               {isLogin ? 'Bienvenido' : 'Únete Ahora'}
             </h2>
             <p className="text-sm sm:text-base text-gray-700">
-              {isLogin ? 'Inicia sesión en tu dashboard' : 'Crea tu cuenta de scout'}
+              {isLogin ? 'Inicia sesión en tu dashboard' : 'Crea tu perfil de jugador'}
             </p>
           </div>
 
@@ -209,7 +207,7 @@ const Auth = ({ onAuthSuccess }) => {
                     onChange={handleChange}
                     required={!isLogin}
                     className="w-full bg-white border-2 border-green-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-lime-neon focus:border-lime-neon block p-3 sm:p-4 pl-10 sm:pl-12 placeholder-gray-500 transition-all"
-                    placeholder="Rafael Nadal"
+                    placeholder="Alejandro Galán"
                   />
                 </div>
               </div>
@@ -228,7 +226,7 @@ const Auth = ({ onAuthSuccess }) => {
                   onChange={handleChange}
                   required
                   className="w-full bg-white border-2 border-green-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-lime-neon focus:border-lime-neon block p-3 sm:p-4 pl-10 sm:pl-12 placeholder-gray-500 transition-all"
-                  placeholder="scout@tennisai.com"
+                  placeholder="scout@padelai.com"
                 />
               </div>
             </div>
@@ -263,35 +261,33 @@ const Auth = ({ onAuthSuccess }) => {
             </div>
 
             {!isLogin && (
-              <>
-                <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-900 mb-2">País</label>
-                    <input
-                      type="text"
-                      name="pais"
-                      value={formData.pais}
-                      onChange={handleChange}
-                      required
-                      className="w-full bg-white border-2 border-green-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-lime-neon focus:border-lime-neon block p-3 sm:p-4 placeholder-gray-500"
-                      placeholder="España"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-900 mb-2">Edad</label>
-                    <input
-                      type="number"
-                      name="edad"
-                      value={formData.edad}
-                      onChange={handleChange}
-                      required
-                      className="w-full bg-white border-2 border-green-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-lime-neon focus:border-lime-neon block p-3 sm:p-4 placeholder-gray-500"
-                      placeholder="17"
-                    />
-                  </div>
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-900 mb-2">País</label>
+                  <input
+                    type="text"
+                    name="pais"
+                    value={formData.pais}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-white border-2 border-green-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-lime-neon focus:border-lime-neon block p-3 sm:p-4 placeholder-gray-500"
+                    placeholder="España"
+                  />
                 </div>
-              </>
+
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-900 mb-2">Edad</label>
+                  <input
+                    type="number"
+                    name="edad"
+                    value={formData.edad}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-white border-2 border-green-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-lime-neon focus:border-lime-neon block p-3 sm:p-4 placeholder-gray-500"
+                    placeholder="25"
+                  />
+                </div>
+              </div>
             )}
 
             <button
@@ -302,8 +298,6 @@ const Auth = ({ onAuthSuccess }) => {
               {loading ? 'Cargando...' : (isLogin ? 'Iniciar Sesión' : 'Crear Cuenta')}
             </button>
           </form>
-
-          {/* BOTONES GOOGLE/APPLE ELIMINADOS */}
 
           <p className="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-gray-700">
             {isLogin ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'}
@@ -317,7 +311,6 @@ const Auth = ({ onAuthSuccess }) => {
           </p>
         </div>
 
-        {/* Footer Links */}
         <div className="hidden sm:flex mt-auto pt-6 sm:pt-8 gap-4 sm:gap-6 text-[10px] sm:text-[11px] text-gray-600">
           <a className="hover:text-green-600 transition-colors" href="#">Privacidad</a>
           <a className="hover:text-green-600 transition-colors" href="#">Términos</a>
