@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Edit, Upload, Play, MapPin, Calendar, Trophy, ArrowRight, Plus, Zap, Eye } from 'lucide-react';
 import EditProfileModal from './EditProfileModal';
+import AnalyzeVideoButton from './AnalyzeVideoButton';
 
 const ProfileView = ({ playerData, onUploadVideo }) => {
   const [videos, setVideos] = useState([]);
@@ -377,6 +378,13 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
                   {video.descripcion && (
                     <p className="text-xs text-gray-600 mb-3 line-clamp-2">{video.descripcion}</p>
                   )}
+                  <div className="mb-3">
+  <AnalyzeVideoButton 
+    video={video}
+    playerName={playerData?.fullName || playerData?.nombre}
+    isPremium={playerData?.isPremium || false}
+  />
+</div>
                   <div className="flex items-center gap-3 text-xs text-gray-500">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
