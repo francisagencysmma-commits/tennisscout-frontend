@@ -227,8 +227,6 @@ function App() {
         return <ProfileView playerData={currentUser} onUploadVideo={handleOpenUploadModal} />;
       case 'videos': 
         return renderVideos();
-      case 'explore': 
-        return (<div className="animate-fadeIn"><PlayersList /></div>);
       default: 
         return <ProfileView playerData={currentUser} onUploadVideo={handleOpenUploadModal} />;
     }

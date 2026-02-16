@@ -1,11 +1,10 @@
 import React from 'react';
-import { Home, Video, Users, Trophy } from 'lucide-react';
+import { Home, Video } from 'lucide-react';
 
 const Sidebar = ({ activeSection, setActiveSection }) => {
   const menuItems = [
     { id: 'profile', icon: Home, label: 'Inicio' },
-    { id: 'videos', icon: Video, label: 'Videos' },
-    { id: 'explore', icon: Users, label: 'Jugadores' },
+    { id: 'videos', icon: Video, label: 'Videos' }
   ];
 
   return (
@@ -15,7 +14,9 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
         {/* Brand Header */}
         <div className="p-6 flex items-center gap-3">
           <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center text-lime-neon">
-            <Trophy className="w-6 h-6" />
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+            </svg>
           </div>
           <div>
             <h1 className="text-black text-xl font-bold leading-none">TennisScout</h1>
