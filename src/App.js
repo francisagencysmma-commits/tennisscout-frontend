@@ -248,8 +248,6 @@ function App() {
       <Sidebar 
   activeSection={activeSection} 
   setActiveSection={setActiveSection}
-  playerData={currentUser}
-  onLogout={handleLogout}
 />
       
       <main className="flex-1 flex flex-col">
