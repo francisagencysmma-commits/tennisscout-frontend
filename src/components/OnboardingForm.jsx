@@ -1,241 +1,56 @@
 import React, { useState } from 'react';
-import { X, ArrowRight, ArrowLeft, Check } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 
-const OnboardingForm_Padel = ({ initialData, onComplete, onSkip }) => {
-  const [currentStep, setCurrentStep] = useState(0);
+const OnboardingForm_Complete = ({ initialData, onComplete, onSkip }) => {
   const [formData, setFormData] = useState({
     fullName: initialData?.nombre || '',
     dateOfBirth: '',
     country: initialData?.pais || '',
     
-    // Información técnica específica de pádel
-    playingSide: '', // Derecha o Izquierda
-    position: '', // Drive (derecha) o Revés (izquierda)
-    playingLevel: '', // Principiante, Intermedio, Avanzado, Profesional
+    // Posición y técnica
+    position: '', // Drive o Revés
+    dominantHand: '',
+    serveType: '',
+    
+    // Nivel
+    playingLevel: '',
     yearsPlaying: '',
+    ranking: '',
     
-    // Golpes y técnicas
-    strongestShot: '', // Bandeja, Víbora, Remate, Volea, etc.
-    bestSkill: '', // Red, Fondo, Potencia, Control, etc.
+    // Golpes
+    strongestShot: '',
+    bestSkills: [],
     weakestShot: '',
-    serveType: '', // Plana, Cortada, Liftada
     
-    // Estilo de juego
-    playingStyle: '', // Agresivo, Defensivo, Equilibrado, Táctico
-    preferredSurface: '', // Césped artificial, Cemento, Cristal
+    // Estilo
+    playingStyle: '',
     
     // Físico
     height: '',
     weight: '',
-    dominantHand: '', // Diestro, Zurdo
     
-    // Experiencia competitiva
+    // Competitivo
     hasCompetitiveExperience: false,
-    tournamentLevel: '', // Local, Regional, Nacional, Internacional
-    ranking: '',
+    tournamentLevel: '',
     currentClub: '',
     currentCoach: '',
     
     // Entrenamiento
     weeklyHours: '',
-    trainingFocus: '', // Técnica, Físico, Táctico, Mental
+    trainingFocus: '',
     
     // Objetivos
-    goals: '', // Mejorar ranking, Profesionalizarse, Diversión, etc.
-    availability: '' // Tiempo disponible para entrenar más
+    goals: '',
+    availability: '',
+    weeklyAvailability: []
   });
 
-  const questions = [
-    {
-      id: 'basic',
-      title: '👋 Información Básica',
-      description: 'Empecemos con lo esencial',
-      fields: [
-        { name: 'fullName', label: 'Nombre Completo', type: 'text', required: true, placeholder: 'Alejandro Galán' },
-        { name: 'dateOfBirth', label: 'Fecha de Nacimiento', type: 'date', required: true },
-        { name: 'country', label: 'País', type: 'text', required: true, placeholder: 'España' }
-      ]
-    },
-    {
-      id: 'position',
-      title: '🎾 Tu Posición en Pista',
-      description: '¿Dónde juegas normalmente?',
-      fields: [
-        { 
-          name: 'position', 
-          label: '¿En qué posición juegas?', 
-          type: 'select', 
-          required: true,
-          options: ['Drive (Derecha)', 'Revés (Izquierda)', 'Ambas posiciones']
-        },
-        { 
-          name: 'playingSide', 
-          label: '¿Qué lado prefieres?', 
-          type: 'select', 
-          required: true,
-          options: ['Derecha', 'Izquierda', 'Sin preferencia']
-        },
-        { 
-          name: 'dominantHand', 
-          label: 'Mano dominante', 
-          type: 'select', 
-          required: true,
-          options: ['Diestro', 'Zurdo']
-        }
-      ]
-    },
-    {
-      id: 'level',
-      title: '📊 Tu Nivel',
-      description: 'Cuéntanos sobre tu experiencia',
-      fields: [
-        { 
-          name: 'playingLevel', 
-          label: '¿Cuál es tu nivel actual?', 
-          type: 'select', 
-          required: true,
-          options: ['Principiante (< 1 año)', 'Intermedio (1-3 años)', 'Avanzado (3-5 años)', 'Competición (5+ años)', 'Profesional']
-        },
-        { name: 'yearsPlaying', label: '¿Cuántos años llevas jugando?', type: 'number', required: true, placeholder: '5' },
-        { name: 'ranking', label: 'Ranking (si tienes)', type: 'text', required: false, placeholder: '#150 Nacional' }
-      ]
-    },
-    {
-      id: 'shots',
-      title: '💪 Tus Golpes',
-      description: 'Identifica tus fortalezas y áreas de mejora',
-      fields: [
-        { 
-          name: 'strongestShot', 
-          label: '¿Cuál es tu golpe más potente?', 
-          type: 'select', 
-          required: true,
-          options: ['Bandeja', 'Víbora', 'Remate', 'Volea', 'Dejada', 'Globo', 'Contraataque']
-        },
-        { 
-          name: 'weakestShot', 
-          label: '¿Qué golpe necesitas mejorar?', 
-          type: 'select', 
-          required: true,
-          options: ['Bandeja', 'Víbora', 'Remate', 'Volea', 'Dejada', 'Globo', 'Contraataque']
-        },
-        { 
-          name: 'bestSkill', 
-          label: '¿Dónde destacas más?', 
-          type: 'select', 
-          required: true,
-          options: ['Juego de Red', 'Juego de Fondo', 'Potencia', 'Control', 'Velocidad', 'Táctica', 'Resistencia']
-        }
-      ]
-    },
-    {
-      id: 'style',
-      title: '🎯 Tu Estilo de Juego',
-      description: '¿Cómo juegas?',
-      fields: [
-        { 
-          name: 'playingStyle', 
-          label: 'Define tu estilo', 
-          type: 'select', 
-          required: true,
-          options: ['Agresivo (ataque constante)', 'Defensivo (contraataque)', 'Equilibrado (versátil)', 'Táctico (cerebral)', 'Potencia pura']
-        },
-        { 
-          name: 'serveType', 
-          label: 'Tipo de saque preferido', 
-          type: 'select', 
-          required: true,
-          options: ['Plano (potencia)', 'Cortado (control)', 'Liftado (efecto)', 'Bandeja saque', 'Varía según rival']
-        },
-        { 
-          name: 'preferredSurface', 
-          label: 'Superficie favorita', 
-          type: 'select', 
-          required: false,
-          options: ['Césped artificial', 'Cemento/Hormigón', 'Cristal', 'Moqueta', 'No tengo preferencia']
-        }
-      ]
-    },
-    {
-      id: 'physical',
-      title: '🏋️ Información Física',
-      description: 'Datos para análisis biomecánico',
-      fields: [
-        { name: 'height', label: 'Altura (cm)', type: 'number', required: false, placeholder: '180' },
-        { name: 'weight', label: 'Peso (kg)', type: 'number', required: false, placeholder: '75' }
-      ]
-    },
-    {
-      id: 'experience',
-      title: '🏆 Experiencia Competitiva',
-      description: 'Tu trayectoria en torneos',
-      fields: [
-        { 
-          name: 'hasCompetitiveExperience', 
-          label: '¿Has jugado torneos?', 
-          type: 'checkbox', 
-          required: false 
-        },
-        { 
-          name: 'tournamentLevel', 
-          label: '¿A qué nivel?', 
-          type: 'select', 
-          required: false,
-          options: ['Local (club)', 'Regional (provincia)', 'Nacional', 'Internacional', 'Circuito profesional (WPT/APT)']
-        },
-        { name: 'currentClub', label: 'Club actual', type: 'text', required: false, placeholder: 'Real Club de Pádel' },
-        { name: 'currentCoach', label: 'Entrenador actual', type: 'text', required: false, placeholder: 'Juan Martín Díaz' }
-      ]
-    },
-    {
-      id: 'training',
-      title: '📅 Entrenamiento',
-      description: 'Tu rutina actual',
-      fields: [
-        { name: 'weeklyHours', label: 'Horas semanales de entreno', type: 'number', required: true, placeholder: '10' },
-        { 
-          name: 'trainingFocus', 
-          label: '¿En qué te enfocas más?', 
-          type: 'select', 
-          required: true,
-          options: ['Técnica', 'Físico/Preparación', 'Táctico/Estrategia', 'Mental/Psicológico', 'Todo equilibrado']
-        }
-      ]
-    },
-    {
-      id: 'goals',
-      title: '🎯 Tus Objetivos',
-      description: '¿Qué buscas conseguir?',
-      fields: [
-        { 
-          name: 'goals', 
-          label: 'Objetivo principal', 
-          type: 'select', 
-          required: true,
-          options: [
-            'Mejorar mi ranking', 
-            'Profesionalizarme', 
-            'Llegar al circuito WPT',
-            'Ganar torneos locales',
-            'Mejorar técnica',
-            'Jugar por diversión y mejorar',
-            'Ser descubierto por scouts'
-          ]
-        },
-        { 
-          name: 'availability', 
-          label: 'Disponibilidad para entrenar más', 
-          type: 'select', 
-          required: true,
-          options: ['Tiempo completo (profesional)', 'Parcial (20h+ semana)', 'Fines de semana', 'Flexible', 'Limitada (trabajo/estudios)']
-        }
-      ]
-    }
-  ];
+  const [selectedSkills, setSelectedSkills] = useState([]);
+  const [availabilityGrid, setAvailabilityGrid] = useState([]);
 
-  const currentQuestion = questions[currentStep];
-  const totalSteps = questions.length;
-  const progress = ((currentStep + 1) / totalSteps) * 100;
+  const skills = ['Red', 'Fondo', 'Control', 'Potencia', 'Velocidad', 'Táctica'];
+  const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  const times = ['Mañana', 'Tarde', 'Noche'];
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -245,144 +60,501 @@ const OnboardingForm_Padel = ({ initialData, onComplete, onSkip }) => {
     }));
   };
 
-  const handleNext = () => {
-    // Validar campos requeridos
-    const requiredFields = currentQuestion.fields.filter(f => f.required);
-    const allFilled = requiredFields.every(field => formData[field.name]);
-    
-    if (!allFilled) {
-      alert('Por favor completa todos los campos obligatorios');
-      return;
-    }
-
-    if (currentStep < totalSteps - 1) {
-      setCurrentStep(prev => prev + 1);
-    } else {
-      handleComplete();
-    }
+  const toggleSkill = (skill) => {
+    setSelectedSkills(prev => {
+      const newSkills = prev.includes(skill) 
+        ? prev.filter(s => s !== skill) 
+        : [...prev, skill];
+      setFormData(f => ({ ...f, bestSkills: newSkills }));
+      return newSkills;
+    });
   };
 
-  const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
-    }
+  const toggleAvailability = (day, time) => {
+    const key = `${day}-${time}`;
+    setAvailabilityGrid(prev => {
+      const newGrid = prev.includes(key) 
+        ? prev.filter(k => k !== key) 
+        : [...prev, key];
+      setFormData(f => ({ ...f, weeklyAvailability: newGrid }));
+      return newGrid;
+    });
   };
 
-  const handleComplete = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     onComplete(formData);
   };
 
   return (
-    <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl relative animate-fadeIn">
-        {/* Progress Bar */}
-        <div className="h-2 bg-gray-200 rounded-t-2xl overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-green-500 to-lime-neon transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
+    <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-y-auto z-50">
+      <div className="min-h-screen py-12 px-4">
+        <div className="max-w-4xl mx-auto">
+          
+          {/* Header */}
+          <header className="text-center mb-10 relative">
+            <h1 className="text-4xl font-extrabold text-white tracking-tight mb-2">Configura tu Perfil</h1>
+            <p className="text-slate-400">Personaliza tu estilo de juego para destacar</p>
+            <button 
+              onClick={onSkip}
+              className="absolute top-0 right-0 text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </header>
 
-        {/* Header */}
-        <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-black text-gray-900">{currentQuestion.title}</h2>
-            <p className="text-sm text-gray-600 mt-1">{currentQuestion.description}</p>
-          </div>
-          <button 
-            onClick={onSkip}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto">
-          {currentQuestion.fields.map(field => (
-            <div key={field.name}>
-              <label className="block text-sm font-bold text-gray-900 mb-2">
-                {field.label} {field.required && <span className="text-red-500">*</span>}
-              </label>
-              
-              {field.type === 'select' ? (
-                <select
-                  name={field.name}
-                  value={formData[field.name]}
-                  onChange={handleChange}
-                  required={field.required}
-                  className="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-lime-neon focus:ring-2 focus:ring-lime-neon/20 transition-all"
-                >
-                  <option value="">Selecciona una opción</option>
-                  {field.options.map(option => (
-                    <option key={option} value={option}>{option}</option>
-                  ))}
-                </select>
-              ) : field.type === 'checkbox' ? (
-                <label className="flex items-center gap-3 cursor-pointer">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            
+            {/* Información Básica */}
+            <section className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-xl">
+              <h2 className="text-sm font-semibold text-lime-400 uppercase tracking-wider mb-6">📋 Información Básica</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Nombre Completo *</label>
                   <input
-                    type="checkbox"
-                    name={field.name}
-                    checked={formData[field.name]}
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName}
                     onChange={handleChange}
-                    className="w-5 h-5 text-lime-neon focus:ring-lime-neon border-gray-300 rounded"
+                    required
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                    placeholder="Alejandro Galán"
                   />
-                  <span className="text-sm text-gray-700">Sí, tengo experiencia en torneos</span>
-                </label>
-              ) : (
-                <input
-                  type={field.type}
-                  name={field.name}
-                  value={formData[field.name]}
-                  onChange={handleChange}
-                  required={field.required}
-                  placeholder={field.placeholder}
-                  className="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-lime-neon focus:ring-2 focus:ring-lime-neon/20 transition-all"
-                />
-              )}
-            </div>
-          ))}
-        </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Fecha de Nacimiento *</label>
+                  <input
+                    type="date"
+                    name="dateOfBirth"
+                    value={formData.dateOfBirth}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">País *</label>
+                  <input
+                    type="text"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                    placeholder="España"
+                  />
+                </div>
+              </div>
+            </section>
 
-        {/* Footer */}
-        <div className="p-6 border-t border-gray-200 flex items-center justify-between">
-          <button
-            onClick={handleBack}
-            disabled={currentStep === 0}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-all ${
-              currentStep === 0 
-                ? 'text-gray-400 cursor-not-allowed' 
-                : 'text-gray-700 hover:bg-gray-100'
-            }`}
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Atrás
-          </button>
+            {/* Posición en Pista */}
+            <section className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-xl">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                {/* Posición */}
+                <div>
+                  <label className="block text-sm font-semibold text-lime-400 uppercase tracking-wider mb-4">Posición en Pista *</label>
+                  <div className="flex gap-4">
+                    {['Drive', 'Revés'].map(pos => (
+                      <label key={pos} className={`flex-1 flex flex-col items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                        formData.position === pos 
+                          ? 'border-lime-400 bg-lime-400/10 text-lime-400' 
+                          : 'border-slate-700 text-white hover:bg-slate-700'
+                      }`}>
+                        <input
+                          type="radio"
+                          name="position"
+                          value={pos}
+                          checked={formData.position === pos}
+                          onChange={handleChange}
+                          className="hidden"
+                          required
+                        />
+                        <span className="text-lg font-bold">{pos}</span>
+                        <span className="text-xs opacity-70">{pos === 'Drive' ? 'Derecha' : 'Izquierda'}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
 
-          <div className="text-sm text-gray-600 font-medium">
-            Paso {currentStep + 1} de {totalSteps}
-          </div>
+                {/* Tipo de Saque */}
+                <div>
+                  <label className="block text-sm font-semibold text-lime-400 uppercase tracking-wider mb-4">Tipo de Saque *</label>
+                  <select
+                    name="serveType"
+                    value={formData.serveType}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                  >
+                    <option value="">Seleccionar...</option>
+                    <option value="Cortado">Saque Cortado (Efecto)</option>
+                    <option value="Plano">Saque Plano (Potencia)</option>
+                    <option value="Liftado">Saque Liftado</option>
+                    <option value="Bandeja">Bandeja Saque</option>
+                  </select>
+                </div>
+              </div>
+            </section>
 
-          <button
-            onClick={handleNext}
-            className="flex items-center gap-2 px-6 py-3 bg-lime-neon text-black font-bold rounded-xl hover:brightness-110 transition-all shadow-lg"
-          >
-            {currentStep === totalSteps - 1 ? (
-              <>
-                <Check className="w-4 h-4" />
-                Finalizar
-              </>
-            ) : (
-              <>
-                Siguiente
-                <ArrowRight className="w-4 h-4" />
-              </>
-            )}
-          </button>
+            {/* Habilidades Técnicas */}
+            <section className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-xl">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                {/* Golpe Potente */}
+                <div>
+                  <label className="block text-sm font-semibold text-lime-400 uppercase tracking-wider mb-4">Golpe más Potente *</label>
+                  <div className="space-y-3">
+                    {[
+                      { value: 'Bandeja', desc: 'Control y profundidad táctica' },
+                      { value: 'Víbora', desc: 'Efecto lateral agresivo' },
+                      { value: 'Remate', desc: 'Potencia para sacar por tres' },
+                      { value: 'Volea', desc: 'Reflejos y red' },
+                      { value: 'Dejada', desc: 'Precisión y tacto' }
+                    ].map(shot => (
+                      <label key={shot.value} className={`flex items-center p-4 bg-slate-900/50 rounded-xl border cursor-pointer transition-colors ${
+                        formData.strongestShot === shot.value ? 'border-lime-400' : 'border-slate-700 hover:border-lime-400/50'
+                      }`}>
+                        <input
+                          type="radio"
+                          name="strongestShot"
+                          value={shot.value}
+                          checked={formData.strongestShot === shot.value}
+                          onChange={handleChange}
+                          className="w-5 h-5 text-lime-400 focus:ring-offset-slate-800"
+                          required
+                        />
+                        <div className="ml-4">
+                          <span className="block text-white font-medium">{shot.value}</span>
+                          <span className="text-xs text-slate-400">{shot.desc}</span>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Mejor Habilidad y Área de Mejora */}
+                <div className="flex flex-col gap-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-lime-400 uppercase tracking-wider mb-4">Mejor Habilidad</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {skills.map(skill => (
+                        <button
+                          key={skill}
+                          type="button"
+                          onClick={() => toggleSkill(skill)}
+                          className={`py-2 px-1 rounded-lg border text-xs font-bold transition-all uppercase ${
+                            selectedSkills.includes(skill)
+                              ? 'border-lime-400 bg-lime-400/10 text-lime-400'
+                              : 'border-slate-700 text-white hover:bg-slate-700'
+                          }`}
+                        >
+                          {skill}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-lime-400 uppercase tracking-wider mb-2">Área de mejora</label>
+                    <input
+                      type="text"
+                      name="weakestShot"
+                      value={formData.weakestShot}
+                      onChange={handleChange}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                      placeholder="Ej: Mi revés de doble mano..."
+                    />
+                    <p className="mt-2 text-xs text-slate-500 italic">Golpe o situación que más te cuesta</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-lime-400 uppercase tracking-wider mb-2">Estilo de Juego *</label>
+                    <select
+                      name="playingStyle"
+                      value={formData.playingStyle}
+                      onChange={handleChange}
+                      required
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                    >
+                      <option value="">Seleccionar...</option>
+                      <option value="Agresivo">Agresivo (ataque constante)</option>
+                      <option value="Defensivo">Defensivo (contraataque)</option>
+                      <option value="Equilibrado">Equilibrado (versátil)</option>
+                      <option value="Táctico">Táctico (cerebral)</option>
+                      <option value="Potencia">Potencia pura</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Nivel y Experiencia */}
+            <section className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-xl">
+              <h2 className="text-sm font-semibold text-lime-400 uppercase tracking-wider mb-6">📊 Nivel y Experiencia</h2>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Nivel Actual *</label>
+                  <select
+                    name="playingLevel"
+                    value={formData.playingLevel}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                  >
+                    <option value="">Seleccionar...</option>
+                    <option value="Principiante">Principiante</option>
+                    <option value="Intermedio">Intermedio</option>
+                    <option value="Avanzado">Avanzado</option>
+                    <option value="Competición">Competición</option>
+                    <option value="Profesional">Profesional</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Años Jugando *</label>
+                  <input
+                    type="number"
+                    name="yearsPlaying"
+                    value={formData.yearsPlaying}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                    placeholder="5"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Ranking</label>
+                  <input
+                    type="text"
+                    name="ranking"
+                    value={formData.ranking}
+                    onChange={handleChange}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                    placeholder="#150"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Mano *</label>
+                  <select
+                    name="dominantHand"
+                    value={formData.dominantHand}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                  >
+                    <option value="">Seleccionar...</option>
+                    <option value="Diestro">Diestro</option>
+                    <option value="Zurdo">Zurdo</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Altura (cm)</label>
+                  <input
+                    type="number"
+                    name="height"
+                    value={formData.height}
+                    onChange={handleChange}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                    placeholder="180"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Peso (kg)</label>
+                  <input
+                    type="number"
+                    name="weight"
+                    value={formData.weight}
+                    onChange={handleChange}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                    placeholder="75"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Club Actual</label>
+                  <input
+                    type="text"
+                    name="currentClub"
+                    value={formData.currentClub}
+                    onChange={handleChange}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                    placeholder="Club Pádel"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Entrenador</label>
+                  <input
+                    type="text"
+                    name="currentCoach"
+                    value={formData.currentCoach}
+                    onChange={handleChange}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                    placeholder="Nombre"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="hasCompetitiveExperience"
+                      checked={formData.hasCompetitiveExperience}
+                      onChange={handleChange}
+                      className="w-5 h-5 text-lime-400 focus:ring-lime-400 border-gray-300 rounded"
+                    />
+                    <span className="text-sm text-slate-300 font-medium">Tengo experiencia en torneos</span>
+                  </label>
+                </div>
+                {formData.hasCompetitiveExperience && (
+                  <div>
+                    <select
+                      name="tournamentLevel"
+                      value={formData.tournamentLevel}
+                      onChange={handleChange}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                    >
+                      <option value="">Nivel de torneos...</option>
+                      <option value="Local">Local (club)</option>
+                      <option value="Regional">Regional</option>
+                      <option value="Nacional">Nacional</option>
+                      <option value="Internacional">Internacional</option>
+                      <option value="Profesional">Profesional (WPT/APT)</option>
+                    </select>
+                  </div>
+                )}
+              </div>
+            </section>
+
+            {/* Objetivos y Disponibilidad */}
+            <section className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-xl">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                {/* Objetivos */}
+                <div>
+                  <label className="block text-sm font-semibold text-lime-400 uppercase tracking-wider mb-4">Objetivos de Temporada *</label>
+                  <textarea
+                    name="goals"
+                    value={formData.goals}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-4 resize-none"
+                    placeholder="¿Qué quieres conseguir? (Ej: Subir ranking, mejorar técnica...)"
+                    rows="6"
+                  />
+                  
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-slate-300 mb-2">Horas semanales *</label>
+                    <input
+                      type="number"
+                      name="weeklyHours"
+                      value={formData.weeklyHours}
+                      onChange={handleChange}
+                      required
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                      placeholder="10"
+                    />
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-slate-300 mb-2">Enfoque *</label>
+                    <select
+                      name="trainingFocus"
+                      value={formData.trainingFocus}
+                      onChange={handleChange}
+                      required
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                    >
+                      <option value="">Seleccionar...</option>
+                      <option value="Técnica">Técnica</option>
+                      <option value="Físico">Físico</option>
+                      <option value="Táctico">Táctico</option>
+                      <option value="Mental">Mental</option>
+                      <option value="Equilibrado">Equilibrado</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Disponibilidad Grid */}
+                <div>
+                  <label className="block text-sm font-semibold text-lime-400 uppercase tracking-wider mb-4">Disponibilidad Semanal</label>
+                  <div className="grid grid-cols-8 gap-1 bg-slate-900 p-3 rounded-xl border border-slate-700 overflow-hidden">
+                    {/* Header */}
+                    <div className="text-[10px] text-slate-500 flex items-center justify-center">Hora</div>
+                    {days.map(day => (
+                      <div key={day} className="text-[10px] text-slate-400 font-bold text-center">{day}</div>
+                    ))}
+                    
+                    {/* Rows */}
+                    {times.map(time => (
+                      <React.Fragment key={time}>
+                        <div className="text-[10px] text-slate-500 py-2 border-t border-slate-800 flex items-center justify-center">
+                          {time}
+                        </div>
+                        {days.map(day => {
+                          const key = `${day}-${time}`;
+                          const isActive = availabilityGrid.includes(key);
+                          return (
+                            <div
+                              key={key}
+                              onClick={() => toggleAvailability(day, time)}
+                              className={`border-t border-slate-800 rounded-sm cursor-pointer transition-all ${
+                                isActive ? 'bg-lime-400 hover:bg-lime-500' : 'hover:bg-slate-700'
+                              }`}
+                            />
+                          );
+                        })}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                  <p className="mt-3 text-xs text-slate-500 text-right italic">Click para marcar disponibilidad</p>
+
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-slate-300 mb-2">Disponibilidad general *</label>
+                    <select
+                      name="availability"
+                      value={formData.availability}
+                      onChange={handleChange}
+                      required
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-lime-400 focus:border-lime-400 p-3"
+                    >
+                      <option value="">Seleccionar...</option>
+                      <option value="Tiempo completo">Tiempo completo</option>
+                      <option value="Parcial">Parcial (20h+)</option>
+                      <option value="Fines de semana">Fines de semana</option>
+                      <option value="Flexible">Flexible</option>
+                      <option value="Limitada">Limitada</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Action Buttons */}
+            <footer className="flex items-center justify-end gap-4 pb-12">
+              <button
+                type="button"
+                onClick={onSkip}
+                className="px-6 py-3 text-slate-400 font-bold hover:text-white transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="px-10 py-3 bg-lime-400 text-slate-900 font-black rounded-xl hover:bg-white hover:shadow-[0_0_20px_rgba(163,230,53,0.4)] transition-all uppercase tracking-widest flex items-center gap-2"
+              >
+                <Check className="w-5 h-5" />
+                Guardar Perfil
+              </button>
+            </footer>
+          </form>
         </div>
       </div>
     </div>
   );
 };
 
-export default OnboardingForm_Padel;
+export default OnboardingForm_Complete;
