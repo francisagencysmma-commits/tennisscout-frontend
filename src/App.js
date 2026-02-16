@@ -5,7 +5,9 @@ import Auth from './components/Auth';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import ProfileView from './components/ProfileView';
+import VideosSection from './components/VideosSection';
 import PublicProfile from './components/PublicProfile';
+import UploadVideoModal from './components/UploadVideoModal';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -50,25 +52,12 @@ function App() {
     setShowUploadModal(true);
   };
 
-  const renderVideos = () => {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-12 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-xl">
-            <h2 className="text-3xl font-bold text-white mb-6">Mis Videos</h2>
-            <div className="text-center py-12">
-              <p className="text-slate-400 mb-6">Sección de videos en desarrollo</p>
-              <button 
-                onClick={handleOpenUploadModal}
-                className="bg-lime-400 text-slate-900 font-bold px-6 py-3 rounded-xl hover:bg-white transition-all"
-              >
-                Subir Video
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  const handleVideoUploaded = () => {
+    setShowUploadModal(false);
+    // Recargar la sección de videos si estamos en ella
+    if (activeSection === 'videos') {
+      window.location.reload();
+    }
   };
 
   const renderSection = () => {
@@ -76,7 +65,7 @@ function App() {
       case 'profile': 
         return <ProfileView playerData={currentUser} onUploadVideo={handleOpenUploadModal} />;
       case 'videos': 
-        return renderVideos();
+        return <VideosSection currentUser={currentUser} />;
       default: 
         return <ProfileView playerData={currentUser} onUploadVideo={handleOpenUploadModal} />;
     }
@@ -114,6 +103,14 @@ function App() {
                   </main>
                 </div>
               </div>
+            )}
+
+            {/* Upload Modal */}
+            {showUploadModal && (
+              <UploadVideoModal 
+                onClose={() => setShowUploadModal(false)}
+                onVideoUploaded={handleVideoUploaded}
+              />
             )}
           </>
         } />

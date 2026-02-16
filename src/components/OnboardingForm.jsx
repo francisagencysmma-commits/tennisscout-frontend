@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import { X, Check } from 'lucide-react';
+import { X, Check, Upload, Loader } from 'lucide-react';
 
-const OnboardingForm_Complete = ({ initialData, onComplete, onSkip }) => {
+const OnboardingForm = ({ initialData, onComplete, onSkip }) => {
   const [formData, setFormData] = useState({
     fullName: initialData?.nombre || '',
     dateOfBirth: '',
     country: initialData?.pais || '',
     
+    // Foto de perfil
+    fotoPerfil: '',
+    
     // Posición y técnica
-    position: '', // Drive o Revés
+    position: '',
     dominantHand: '',
     serveType: '',
     
@@ -47,6 +50,7 @@ const OnboardingForm_Complete = ({ initialData, onComplete, onSkip }) => {
 
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [availabilityGrid, setAvailabilityGrid] = useState([]);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   const skills = ['Red', 'Fondo', 'Control', 'Potencia', 'Velocidad', 'Táctica'];
   const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
@@ -58,6 +62,43 @@ const OnboardingForm_Complete = ({ initialData, onComplete, onSkip }) => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('La imagen es muy grande. Máximo 5MB.');
+      return;
+    }
+
+    setUploadingPhoto(true);
+
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+      formDataUpload.append('upload_preset', 'tennisscout');
+
+      const response = await fetch('https://api.cloudinary.com/v1_1/dfiw0rscm/image/upload', {
+        method: 'POST',
+        body: formDataUpload
+      });
+
+      const data = await response.json();
+      
+      if (data.secure_url) {
+        setFormData(prev => ({
+          ...prev,
+          fotoPerfil: data.secure_url
+        }));
+      }
+    } catch (error) {
+      console.error('Error subiendo foto:', error);
+      alert('Error subiendo foto. Intenta de nuevo.');
+    } finally {
+      setUploadingPhoto(false);
+    }
   };
 
   const toggleSkill = (skill) => {
@@ -105,6 +146,48 @@ const OnboardingForm_Complete = ({ initialData, onComplete, onSkip }) => {
 
           <form onSubmit={handleSubmit} className="space-y-8">
             
+            {/* Foto de Perfil */}
+            <section className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-xl">
+              <h2 className="text-sm font-semibold text-lime-400 uppercase tracking-wider mb-6">📸 Foto de Perfil</h2>
+              <div className="flex flex-col items-center gap-6">
+                {formData.fotoPerfil ? (
+                  <img 
+                    src={formData.fotoPerfil} 
+                    alt="Profile" 
+                    className="w-32 h-32 rounded-full object-cover border-4 border-lime-400"
+                  />
+                ) : (
+                  <div className="w-32 h-32 rounded-full bg-lime-400 flex items-center justify-center">
+                    <span className="text-6xl font-bold text-slate-900">
+                      {formData.fullName.charAt(0) || '?'}
+                    </span>
+                  </div>
+                )}
+                
+                <label className="cursor-pointer px-6 py-3 bg-lime-400 text-slate-900 font-bold rounded-xl hover:bg-white transition-all flex items-center gap-2">
+                  {uploadingPhoto ? (
+                    <>
+                      <Loader className="w-5 h-5 animate-spin" />
+                      Subiendo...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-5 h-5" />
+                      {formData.fotoPerfil ? 'Cambiar Foto' : 'Subir Foto'}
+                    </>
+                  )}
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handlePhotoUpload}
+                    className="hidden"
+                    disabled={uploadingPhoto}
+                  />
+                </label>
+                <p className="text-xs text-slate-500 text-center">Recomendado: foto clara de tu rostro (máx 5MB)</p>
+              </div>
+            </section>
+
             {/* Información Básica */}
             <section className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-xl">
               <h2 className="text-sm font-semibold text-lime-400 uppercase tracking-wider mb-6">📋 Información Básica</h2>
@@ -151,7 +234,6 @@ const OnboardingForm_Complete = ({ initialData, onComplete, onSkip }) => {
             <section className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-xl">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 
-                {/* Posición */}
                 <div>
                   <label className="block text-sm font-semibold text-lime-400 uppercase tracking-wider mb-4">Posición en Pista *</label>
                   <div className="flex gap-4">
@@ -177,7 +259,6 @@ const OnboardingForm_Complete = ({ initialData, onComplete, onSkip }) => {
                   </div>
                 </div>
 
-                {/* Tipo de Saque */}
                 <div>
                   <label className="block text-sm font-semibold text-lime-400 uppercase tracking-wider mb-4">Tipo de Saque *</label>
                   <select
@@ -201,7 +282,6 @@ const OnboardingForm_Complete = ({ initialData, onComplete, onSkip }) => {
             <section className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-xl">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 
-                {/* Golpe Potente */}
                 <div>
                   <label className="block text-sm font-semibold text-lime-400 uppercase tracking-wider mb-4">Golpe más Potente *</label>
                   <div className="space-y-3">
@@ -233,7 +313,6 @@ const OnboardingForm_Complete = ({ initialData, onComplete, onSkip }) => {
                   </div>
                 </div>
 
-                {/* Mejor Habilidad y Área de Mejora */}
                 <div className="flex flex-col gap-6">
                   <div>
                     <label className="block text-sm font-semibold text-lime-400 uppercase tracking-wider mb-4">Mejor Habilidad</label>
@@ -433,7 +512,6 @@ const OnboardingForm_Complete = ({ initialData, onComplete, onSkip }) => {
             <section className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-xl">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 
-                {/* Objetivos */}
                 <div>
                   <label className="block text-sm font-semibold text-lime-400 uppercase tracking-wider mb-4">Objetivos de Temporada *</label>
                   <textarea
@@ -478,17 +556,14 @@ const OnboardingForm_Complete = ({ initialData, onComplete, onSkip }) => {
                   </div>
                 </div>
 
-                {/* Disponibilidad Grid */}
                 <div>
                   <label className="block text-sm font-semibold text-lime-400 uppercase tracking-wider mb-4">Disponibilidad Semanal</label>
                   <div className="grid grid-cols-8 gap-1 bg-slate-900 p-3 rounded-xl border border-slate-700 overflow-hidden">
-                    {/* Header */}
                     <div className="text-[10px] text-slate-500 flex items-center justify-center">Hora</div>
                     {days.map(day => (
                       <div key={day} className="text-[10px] text-slate-400 font-bold text-center">{day}</div>
                     ))}
                     
-                    {/* Rows */}
                     {times.map(time => (
                       <React.Fragment key={time}>
                         <div className="text-[10px] text-slate-500 py-2 border-t border-slate-800 flex items-center justify-center">
@@ -557,4 +632,4 @@ const OnboardingForm_Complete = ({ initialData, onComplete, onSkip }) => {
   );
 };
 
-export default OnboardingForm_Complete;
+export default OnboardingForm;
