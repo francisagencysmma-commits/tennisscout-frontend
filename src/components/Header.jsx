@@ -31,16 +31,7 @@ const Header = ({ playerData, onLogout }) => {
             <Bell className="w-5 h-5" />
           </button>
 
-          <button className="flex items-center gap-2 px-6 py-3 bg-dark-deepest text-cream-50 rounded-xl hover:bg-dark-base transition-all">
-            <Link2 className="w-5 h-5 text-lime-neon" />
-            <span className="font-bold">Share Profile</span>
-          </button>
           
-          <button className="flex items-center gap-2 px-6 py-3 btn-neon rounded-xl">
-            <Send className="w-5 h-5" />
-            <span className="font-bold">Send to Scouts</span>
-          </button>
-
           <button 
             onClick={onLogout}
             className="p-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all"

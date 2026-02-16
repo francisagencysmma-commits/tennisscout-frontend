@@ -136,6 +136,38 @@ const ProfileView = ({ playerData, onUploadVideo }) => {
                 <Edit className="w-5 h-5" />
                 Editar Perfil
               </button>
+              // Añade estos botones en ProfileView.jsx, dentro del hero section después de "Editar Perfil"
+
+<div className="flex flex-wrap gap-3 mt-3">
+  <button 
+    onClick={() => {
+      const profileUrl = `${window.location.origin}/player/${playerData._id}`;
+      navigator.clipboard.writeText(profileUrl);
+      alert('¡Link copiado al portapapeles!');
+    }}
+    className="flex-1 bg-white border-2 border-gray-200 text-black font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:border-lime-neon hover:shadow-lg transition-all"
+  >
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+    </svg>
+    Copiar Link
+  </button>
+  
+  <button 
+    onClick={() => {
+      const profileUrl = `${window.location.origin}/player/${playerData._id}`;
+      const subject = encodeURIComponent(`Perfil de ${playerData.fullName || playerData.nombre} - TennisScout AI`);
+      const body = encodeURIComponent(`Hola,\n\nTe comparto el perfil de ${playerData.fullName || playerData.nombre} en TennisScout AI:\n\n${profileUrl}\n\nSaludos`);
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }}
+    className="flex-1 bg-lime-neon text-black font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:brightness-110 hover:shadow-lg transition-all"
+  >
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+    </svg>
+    Share with Scouts
+  </button>
+</div>
             </div>
           </div>
         </div>

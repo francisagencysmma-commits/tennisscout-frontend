@@ -125,20 +125,20 @@ const Auth = ({ onAuthSuccess }) => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col lg:flex-row">
+    <div className="flex min-h-screen flex-col lg:flex-row bg-gradient-to-br from-green-50 via-lime-50 to-yellow-50">
       {/* Left Section: Hero & Branding */}
-      <div className="relative hidden w-full items-center justify-center lg:flex lg:w-3/5">
+      <div className="relative hidden w-full items-start justify-center lg:flex lg:w-3/5 pt-20">
         {/* Background Image */}
         <div className="absolute inset-0 bg-cover bg-center" style={{
-          backgroundImage: "url(https://collection.cloudinary.com/dfiw0rscm/4a060510e7bc933e0daf339da5c57e24)"
+          backgroundImage: "url('https://images.unsplash.com/photo-1622163642998-1ea32b0bbc67?w=1200&q=80')"
         }}>
-        
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-green-900/40"></div>
         </div>
 
         {/* Content */}
-        <div className="relative z-10 px-12 xl:px-24">
+        <div className="relative z-10 px-12 xl:px-24 pt-7">
           <div className="flex items-center gap-3 mb-12">
-            <div className="bg-lime-neon p-2 rounded-lg">
+            <div className="bg-lime-neon p-2 rounded-lg shadow-lg shadow-lime-neon/50">
               <Trophy className="w-8 h-8 text-black" />
             </div>
             <h1 className="text-3xl font-black tracking-tight text-white">TennisScout AI</h1>
@@ -148,38 +148,38 @@ const Auth = ({ onAuthSuccess }) => {
             <h2 className="text-5xl xl:text-6xl font-black leading-tight mb-6 text-white">
               Domina la Cancha con <span className="text-lime-neon">IA Avanzada</span>
             </h2>
-            <p className="text-lg text-gray-300 mb-12">
+            <p className="text-lg text-gray-200 mb-12">
               Únete a la red élite de scouts, coaches y jugadores profesionales usando análisis de movimiento de próxima generación.
             </p>
 
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-lime-neon/20 text-lime-neon">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-lime-neon/90 text-black shadow-lg shadow-lime-neon/30">
                   <Trophy className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="font-bold text-white">Análisis de Golpes IA</h3>
-                  <p className="text-sm text-gray-400">Feedback biomecánico en tiempo real de cada saque y volea.</p>
+                  <p className="text-sm text-gray-300">Feedback biomecánico en tiempo real de cada saque y volea.</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-lime-neon/20 text-lime-neon">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-lime-neon/90 text-black shadow-lg shadow-lime-neon/30">
                   <User className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="font-bold text-white">Informes Scout</h3>
-                  <p className="text-sm text-gray-400">Genera reportes PDF profesionales para reclutadores en segundos.</p>
+                  <p className="text-sm text-gray-300">Genera reportes PDF profesionales para reclutadores en segundos.</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-lime-neon/20 text-lime-neon">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-lime-neon/90 text-black shadow-lg shadow-lime-neon/30">
                   <Calendar className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="font-bold text-white">Seguimiento de Rendimiento</h3>
-                  <p className="text-sm text-gray-400">Visualiza tu crecimiento con métricas históricas basadas en datos.</p>
+                  <p className="text-sm text-gray-300">Visualiza tu crecimiento con métricas históricas basadas en datos.</p>
                 </div>
               </div>
             </div>
@@ -187,32 +187,32 @@ const Auth = ({ onAuthSuccess }) => {
         </div>
 
         {/* Bottom Badge */}
-        <div className="absolute bottom-8 left-12 flex items-center gap-2 text-xs font-medium text-gray-400 uppercase tracking-widest">
+        <div className="absolute bottom-8 left-12 flex items-center gap-2 text-xs font-medium text-gray-300 uppercase tracking-widest">
           <span className="h-[1px] w-8 bg-lime-neon"></span>
           El Futuro del Tenis Profesional
         </div>
       </div>
 
       {/* Right Section: Form */}
-      <div className="flex w-full flex-col items-center justify-center p-6 lg:w-2/5 lg:p-12 bg-gray-900">
+      <div className="flex w-full flex-col items-center justify-center p-6 lg:w-2/5 lg:p-12 bg-white">
         {/* Mobile Logo */}
         <div className="flex items-center gap-2 mb-8 lg:hidden">
           <Trophy className="w-8 h-8 text-lime-neon" />
-          <h1 className="text-2xl font-black tracking-tight text-white">TennisScout AI</h1>
+          <h1 className="text-2xl font-black tracking-tight text-gray-900">TennisScout AI</h1>
         </div>
 
-        <div className="w-full max-w-md rounded-2xl p-8 lg:p-10 bg-gray-800/60 backdrop-blur-sm border border-gray-700">
+        <div className="w-full max-w-md rounded-2xl p-8 lg:p-10 bg-gradient-to-br from-green-50 to-lime-50 border-2 border-green-200 shadow-xl">
           <div className="mb-10 text-center">
-            <h2 className="text-3xl font-bold text-white mb-2">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
               {isLogin ? 'Bienvenido' : 'Únete Ahora'}
             </h2>
-            <p className="text-gray-400">
+            <p className="text-gray-700">
               {isLogin ? 'Inicia sesión en tu dashboard' : 'Crea tu cuenta de scout'}
             </p>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-900/50 border border-red-500 rounded-xl text-red-200 text-sm">
+            <div className="mb-6 p-4 bg-red-100 border-2 border-red-400 rounded-xl text-red-800 text-sm font-medium">
               {error}
             </div>
           )}
@@ -220,7 +220,7 @@ const Auth = ({ onAuthSuccess }) => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {!isLogin && (
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Nombre Completo</label>
+                <label className="block text-sm font-medium text-gray-900 mb-2">Nombre Completo</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-500">
                     <User className="w-5 h-5" />
@@ -231,7 +231,7 @@ const Auth = ({ onAuthSuccess }) => {
                     value={formData.nombre}
                     onChange={handleChange}
                     required={!isLogin}
-                    className="w-full bg-gray-900 border border-gray-700 text-white text-sm rounded-xl focus:ring-lime-neon focus:border-lime-neon block p-4 pl-12 placeholder-gray-600 transition-all"
+                    className="w-full bg-white border-2 border-green-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-lime-neon focus:border-lime-neon block p-4 pl-12 placeholder-gray-500 transition-all"
                     placeholder="Rafael Nadal"
                   />
                 </div>
@@ -239,7 +239,7 @@ const Auth = ({ onAuthSuccess }) => {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+              <label className="block text-sm font-medium text-gray-900 mb-2">Email</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-500">
                   <Mail className="w-5 h-5" />
@@ -250,7 +250,7 @@ const Auth = ({ onAuthSuccess }) => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full bg-gray-900 border border-gray-700 text-white text-sm rounded-xl focus:ring-lime-neon focus:border-lime-neon block p-4 pl-12 placeholder-gray-600 transition-all"
+                  className="w-full bg-white border-2 border-green-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-lime-neon focus:border-lime-neon block p-4 pl-12 placeholder-gray-500 transition-all"
                   placeholder="scout@tennisai.com"
                 />
               </div>
@@ -258,9 +258,9 @@ const Auth = ({ onAuthSuccess }) => {
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-gray-300">Contraseña</label>
+                <label className="block text-sm font-medium text-gray-900">Contraseña</label>
                 {isLogin && (
-                  <a className="text-xs text-lime-neon hover:underline" href="#">¿Olvidaste tu contraseña?</a>
+                  <a className="text-xs text-green-600 hover:underline font-medium" href="#">¿Olvidaste tu contraseña?</a>
                 )}
               </div>
               <div className="relative">
@@ -273,11 +273,11 @@ const Auth = ({ onAuthSuccess }) => {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="w-full bg-gray-900 border border-gray-700 text-white text-sm rounded-xl focus:ring-lime-neon focus:border-lime-neon block p-4 pl-12 pr-12 placeholder-gray-600 transition-all"
+                  className="w-full bg-white border-2 border-green-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-lime-neon focus:border-lime-neon block p-4 pl-12 pr-12 placeholder-gray-500 transition-all"
                   placeholder="••••••••"
                 />
                 <div 
-                  className="absolute inset-y-0 right-0 flex items-center pr-4 cursor-pointer text-gray-500 hover:text-lime-neon"
+                  className="absolute inset-y-0 right-0 flex items-center pr-4 cursor-pointer text-gray-500 hover:text-green-600"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -289,7 +289,7 @@ const Auth = ({ onAuthSuccess }) => {
               <>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">País</label>
+                    <label className="block text-sm font-medium text-gray-900 mb-2">País</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-500">
                         <MapPin className="w-4 h-4" />
@@ -300,35 +300,35 @@ const Auth = ({ onAuthSuccess }) => {
                         value={formData.pais}
                         onChange={handleChange}
                         required
-                        className="w-full bg-gray-900 border border-gray-700 text-white text-sm rounded-xl focus:ring-lime-neon focus:border-lime-neon block p-4 pl-11 placeholder-gray-600"
+                        className="w-full bg-white border-2 border-green-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-lime-neon focus:border-lime-neon block p-4 pl-11 placeholder-gray-500"
                         placeholder="España"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Edad</label>
+                    <label className="block text-sm font-medium text-gray-900 mb-2">Edad</label>
                     <input
                       type="number"
                       name="edad"
                       value={formData.edad}
                       onChange={handleChange}
                       required
-                      className="w-full bg-gray-900 border border-gray-700 text-white text-sm rounded-xl focus:ring-lime-neon focus:border-lime-neon block p-4 placeholder-gray-600"
+                      className="w-full bg-white border-2 border-green-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-lime-neon focus:border-lime-neon block p-4 placeholder-gray-500"
                       placeholder="17"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">UTR Rating (opcional)</label>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">UTR Rating (opcional)</label>
                   <input
                     type="number"
                     step="0.1"
                     name="utrRating"
                     value={formData.utrRating}
                     onChange={handleChange}
-                    className="w-full bg-gray-900 border border-gray-700 text-white text-sm rounded-xl focus:ring-lime-neon focus:border-lime-neon block p-4 placeholder-gray-600"
+                    className="w-full bg-white border-2 border-green-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-lime-neon focus:border-lime-neon block p-4 placeholder-gray-500"
                     placeholder="12.4"
                   />
                 </div>
@@ -338,11 +338,11 @@ const Auth = ({ onAuthSuccess }) => {
             {isLogin && (
               <div className="flex items-center">
                 <input
-                  className="w-4 h-4 text-lime-neon bg-gray-900 border-gray-700 rounded focus:ring-lime-neon"
+                  className="w-4 h-4 text-lime-neon bg-white border-2 border-green-300 rounded focus:ring-lime-neon"
                   id="remember"
                   type="checkbox"
                 />
-                <label className="ml-2 text-sm text-gray-400" htmlFor="remember">
+                <label className="ml-2 text-sm text-gray-700" htmlFor="remember">
                   Mantener sesión iniciada por 30 días
                 </label>
               </div>
@@ -351,7 +351,7 @@ const Auth = ({ onAuthSuccess }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-lime-neon to-green-400 text-gray-900 font-black text-lg hover:shadow-[0_0_20px_rgba(205,255,0,0.4)] transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50"
+              className="w-full py-4 rounded-xl bg-lime-neon text-gray-900 font-black text-lg hover:brightness-110 hover:shadow-[0_0_20px_rgba(205,255,0,0.4)] transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 shadow-lg"
             >
               {loading ? 'Cargando...' : (isLogin ? 'Iniciar Sesión' : 'Crear Cuenta')}
             </button>
@@ -359,28 +359,28 @@ const Auth = ({ onAuthSuccess }) => {
 
           <div className="relative my-8">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-gray-700"></span>
+              <span className="w-full border-t-2 border-green-200"></span>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-gray-800 px-2 text-gray-500">O continúa con</span>
+              <span className="bg-gradient-to-br from-green-50 to-lime-50 px-2 text-gray-600 font-medium">O continúa con</span>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <button className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-gray-700 bg-gray-900 hover:bg-gray-800 transition-colors">
-              <span className="text-sm font-medium text-white">Google</span>
+            <button className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 border-green-200 bg-white hover:bg-green-50 transition-colors">
+              <span className="text-sm font-medium text-gray-900">Google</span>
             </button>
-            <button className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-gray-700 bg-gray-900 hover:bg-gray-800 transition-colors">
-              <span className="text-sm font-medium text-white">Apple</span>
+            <button className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 border-green-200 bg-white hover:bg-green-50 transition-colors">
+              <span className="text-sm font-medium text-gray-900">Apple</span>
             </button>
           </div>
 
-          <p className="mt-8 text-center text-sm text-gray-400">
+          <p className="mt-8 text-center text-sm text-gray-700">
             {isLogin ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'}
             {' '}
             <button
               onClick={() => { setIsLogin(!isLogin); setError(''); }}
-              className="text-lime-neon font-bold hover:underline"
+              className="text-green-600 font-bold hover:underline"
             >
               {isLogin ? 'Únete a la Red' : 'Inicia Sesión'}
             </button>
@@ -389,17 +389,17 @@ const Auth = ({ onAuthSuccess }) => {
 
         {/* Trust Badges */}
         <div className="mt-12 w-full max-w-md">
-          <p className="text-center text-[10px] uppercase tracking-widest text-gray-500 mb-6 font-bold">
+          <p className="text-center text-[10px] uppercase tracking-widest text-gray-600 mb-6 font-bold">
             Confiado por Socios Técnicos Globalmente
           </p>
-          <div className="flex flex-wrap justify-center items-center gap-8 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
-            <div className="flex items-center gap-1 font-black text-lg text-white">
+          <div className="flex flex-wrap justify-center items-center gap-8">
+            <div className="flex items-center gap-1 font-black text-lg text-green-600">
               <Trophy className="w-5 h-5" /> SECURE
             </div>
-            <div className="flex items-center gap-1 font-black text-lg text-white">
+            <div className="flex items-center gap-1 font-black text-lg text-green-600">
               <Trophy className="w-5 h-5" /> ATP-TECH
             </div>
-            <div className="flex items-center gap-1 font-black text-lg text-white">
+            <div className="flex items-center gap-1 font-black text-lg text-green-600">
               <Trophy className="w-5 h-5" /> WTA-CERT
             </div>
           </div>
@@ -407,9 +407,9 @@ const Auth = ({ onAuthSuccess }) => {
 
         {/* Footer Links */}
         <div className="mt-auto pt-8 flex gap-6 text-[11px] text-gray-600">
-          <a className="hover:text-lime-neon transition-colors" href="#">Privacidad</a>
-          <a className="hover:text-lime-neon transition-colors" href="#">Términos</a>
-          <a className="hover:text-lime-neon transition-colors" href="#">Soporte</a>
+          <a className="hover:text-green-600 transition-colors" href="#">Privacidad</a>
+          <a className="hover:text-green-600 transition-colors" href="#">Términos</a>
+          <a className="hover:text-green-600 transition-colors" href="#">Soporte</a>
         </div>
       </div>
     </div>
